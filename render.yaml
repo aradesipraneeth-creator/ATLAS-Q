@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: atlas-q
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: "npm --prefix frontend install && npm --prefix frontend run build && pip install -r requirements.txt"
+    startCommand: "python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: NODE_VERSION
+        value: 20.12.0

@@ -14,7 +14,8 @@ import {
   ArrowUpRight, 
   Layers, 
   RefreshCw,
-  Clock
+  Clock,
+  Sparkles
 } from 'lucide-react';
 import { fetchDisasterImpact, runDisasterOptimization } from '../services/api';
 
@@ -55,17 +56,17 @@ export default function DisasterManagementPage() {
   };
 
   return (
-    <div className="space-y-10">
-      {/* 03 Header & Editorial Hero */}
+    <div className="space-y-8">
+      {/* 03 Header & Editorial Hero with Glassmorphism */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center space-x-2 bg-[#D3E4B7] text-[#28191D] text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 glass-pill text-[#28191D] text-xs font-mono font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#A51F52]"></span>
             <span>03 — Disaster Management</span>
             <span>•</span>
             <span>Multi-Hazard Response & Quantum-Inspired Logistics</span>
           </div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60]">
+          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             <span>NDMA Incident Command Protocol 4</span>
           </div>
@@ -82,8 +83,8 @@ export default function DisasterManagementPage() {
             </p>
           </div>
 
-          {/* Section Mode Switcher */}
-          <div className="inline-flex p-1.5 bg-white border border-[#EBDCD8] rounded-full shadow-xs">
+          {/* Section Mode Switcher in Glass Pill */}
+          <div className="inline-flex p-1.5 glass-panel rounded-full shadow-xs">
             <button
               onClick={() => setActiveTab('impact')}
               className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition ${
@@ -115,9 +116,9 @@ export default function DisasterManagementPage() {
       {/* ========================================================================= */}
       {activeTab === 'impact' && (
         <div className="space-y-8">
-          {/* High-Level Multi-Hazard KPI Cards */}
+          {/* Glass KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-2">
+            <div className="glass-panel glass-card-hover rounded-3xl p-6 space-y-2">
               <span className="text-[10px] font-mono uppercase font-bold text-[#735E60] block">POPULATION EXPOSED</span>
               <div className="flex items-baseline space-x-2">
                 <span className="text-3xl font-extrabold text-[#28191D] font-headline">
@@ -128,7 +129,7 @@ export default function DisasterManagementPage() {
               <span className="text-[11px] text-[#A51F52] font-semibold block">Across 3 Coastal Hazard Sectors</span>
             </div>
 
-            <div className="bg-[#F4E3E6]/60 border border-[#ebd0d6] rounded-3xl p-6 space-y-2">
+            <div className="glass-panel glass-card-hover rounded-3xl p-6 space-y-2 border-[#ebd0d6]" style={{ background: 'rgba(244, 227, 230, 0.65)' }}>
               <span className="text-[10px] font-mono uppercase font-bold text-[#A51F52] block">EVACUATED TO DATE</span>
               <div className="flex items-baseline space-x-2">
                 <span className="text-3xl font-extrabold text-[#28191D] font-headline">
@@ -141,7 +142,7 @@ export default function DisasterManagementPage() {
               <span className="text-[11px] text-[#735E60] block font-mono">Target: Clearance by T-6h</span>
             </div>
 
-            <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-2">
+            <div className="glass-panel glass-card-hover rounded-3xl p-6 space-y-2">
               <span className="text-[10px] font-mono uppercase font-bold text-[#735E60] block">CYCLONE SHELTER LOAD</span>
               <div className="flex items-baseline space-x-2">
                 <span className="text-3xl font-extrabold text-[#28191D] font-headline">
@@ -158,8 +159,8 @@ export default function DisasterManagementPage() {
               <span className="text-[10px] text-[#735E60] block font-mono">Capacity Occupied: {impactData?.shelter_occupancy_pct || 73.2}%</span>
             </div>
 
-            <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-2">
-              <span className="text-[10px] font-mono uppercase font-bold text-[#735E60] block">NDRF / SDRF RESCUE UNITS</span>
+            <div className="glass-panel glass-card-hover rounded-3xl p-6 space-y-2">
+              <span className="text-[10px] font-mono uppercase font-bold text-[#735E60] block">NDRF / SDRF UNITS</span>
               <div className="flex items-baseline space-x-2">
                 <span className="text-3xl font-extrabold text-[#28191D] font-headline">
                   4 Teams
@@ -170,16 +171,16 @@ export default function DisasterManagementPage() {
             </div>
           </div>
 
-          {/* Evacuation Sectors & Designated Shelters */}
+          {/* Evacuation Sectors & Designated Shelters in Glass Panes */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Evacuation Sectors Table */}
-            <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4">
+            {/* Evacuation Sectors */}
+            <div className="glass-panel rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#F4E3E6]">
                 <div>
                   <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
                     coastal evacuation sectors.
                   </h3>
-                  <p className="text-xs text-[#735E60]">Real-time clearance progression and bottleneck monitoring.</p>
+                  <p className="text-xs text-[#735E60]">Real-time clearance progression and route bottleneck monitoring.</p>
                 </div>
                 <span className="text-[10px] font-mono font-bold bg-[#D3E4B7] text-[#28191D] px-2.5 py-1 rounded-full">
                   CIVIL PROTOCOL
@@ -188,7 +189,7 @@ export default function DisasterManagementPage() {
 
               <div className="space-y-3">
                 {impactData?.evacuation_zones?.map((zone) => (
-                  <div key={zone.zone_id} className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8] space-y-2">
+                  <div key={zone.zone_id} className="p-4 rounded-2xl glass-panel border border-white/60 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className="text-xs font-mono font-bold bg-[#28191D] text-white px-2 py-0.5 rounded-full">
@@ -227,7 +228,7 @@ export default function DisasterManagementPage() {
             </div>
 
             {/* Designated Shelters */}
-            <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4">
+            <div className="glass-panel rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#F4E3E6]">
                 <div>
                   <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
@@ -248,7 +249,7 @@ export default function DisasterManagementPage() {
                 {impactData?.shelters?.map((shelter) => {
                   const pct = Math.round((shelter.current_occupancy / shelter.capacity_persons) * 100);
                   return (
-                    <div key={shelter.id} className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8] space-y-2">
+                    <div key={shelter.id} className="p-4 rounded-2xl glass-panel border border-white/60 space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="text-sm font-bold text-[#28191D]">{shelter.name}</h4>
@@ -286,8 +287,8 @@ export default function DisasterManagementPage() {
       {/* ========================================================================= */}
       {activeTab === 'qsa' && (
         <div className="space-y-8">
-          {/* QSA Config & Runner Card */}
-          <div className="bg-[#FFF3F0] border border-[#EBDCD8] rounded-3xl p-6 lg:p-8 space-y-6">
+          {/* QSA Config & Runner in Glass */}
+          <div className="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#EBDCD8]">
               <div className="space-y-1">
                 <div className="flex items-center space-x-2">
@@ -305,7 +306,7 @@ export default function DisasterManagementPage() {
                 <select
                   value={problemType}
                   onChange={(e) => setProblemType(e.target.value)}
-                  className="bg-white border border-[#EBDCD8] rounded-2xl px-4 py-2 text-xs font-semibold text-[#28191D] focus:outline-none"
+                  className="glass-panel rounded-2xl px-4 py-2 text-xs font-semibold text-[#28191D] focus:outline-none border border-white/60"
                 >
                   <option value="shelter_dispatch">Shelter Capacity & Evacuee Allocation</option>
                   <option value="rescue_units">Rescue Boat & NDRF Team Placement</option>
@@ -332,11 +333,11 @@ export default function DisasterManagementPage() {
               </div>
             </div>
 
-            {/* Benchmark Comparison Table / Metric Highlights */}
+            {/* Benchmark Comparison Cards */}
             {qsaResults ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-white p-5 rounded-2xl border border-[#EBDCD8] space-y-2">
+                  <div className="glass-panel p-5 rounded-2xl border border-white/60 space-y-2">
                     <span className="text-[10px] uppercase font-bold text-[#735E60] block font-mono">QSA OBJECTIVE ENERGY</span>
                     <span className="text-2xl font-extrabold text-[#A51F52] font-mono">
                       {qsaResults.quantum_inspired_solution?.objective_energy_score?.toFixed(4)}
@@ -346,7 +347,7 @@ export default function DisasterManagementPage() {
                     </span>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border border-[#EBDCD8] space-y-2">
+                  <div className="glass-panel p-5 rounded-2xl border border-white/60 space-y-2">
                     <span className="text-[10px] uppercase font-bold text-[#735E60] block font-mono">CLASSICAL SA BASELINE</span>
                     <span className="text-2xl font-extrabold text-[#735E60] font-mono">
                       {qsaResults.classical_baseline?.objective_energy_score?.toFixed(4)}
@@ -356,7 +357,7 @@ export default function DisasterManagementPage() {
                     </span>
                   </div>
 
-                  <div className="bg-[#D3E4B7] p-5 rounded-2xl border border-[#c4db9e] space-y-2">
+                  <div className="p-5 rounded-2xl border border-[#c4db9e] space-y-2 bg-[#D3E4B7]/80">
                     <span className="text-[10px] uppercase font-bold text-[#28191D] block font-mono">TUNNELING ADVANTAGE</span>
                     <span className="text-2xl font-extrabold text-[#28191D] font-mono">
                       +{qsaResults.comparison_metrics?.energy_improvement_pct}%
@@ -367,13 +368,13 @@ export default function DisasterManagementPage() {
                   </div>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-[#EBDCD8] space-y-3">
+                <div className="glass-panel p-5 rounded-2xl border border-white/60 space-y-3">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#28191D]">
                     Allocated Facility Coordinates (Top Optimal Configuration)
                   </h4>
                   <div className="flex flex-wrap gap-2 text-xs font-mono">
                     {qsaResults.quantum_inspired_solution?.allocation_coordinates?.map((c, i) => (
-                      <span key={i} className="px-3 py-1.5 rounded-xl bg-[#FFF3F0] border border-[#EBDCD8] text-[#28191D]">
+                      <span key={i} className="px-3 py-1.5 rounded-xl glass-pill text-[#28191D]">
                         Facility {i + 1}: ({c[0].toFixed(2)}°N, {c[1].toFixed(2)}°E)
                       </span>
                     ))}
@@ -381,7 +382,7 @@ export default function DisasterManagementPage() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-[#EBDCD8] space-y-3">
+              <div className="text-center py-10 glass-panel rounded-2xl border border-dashed border-[#EBDCD8] space-y-3">
                 <Cpu className="w-8 h-8 text-[#A51F52] mx-auto" />
                 <h4 className="text-sm font-bold text-[#28191D]">Ready to Run QSA Allocation Solver</h4>
                 <p className="text-xs text-[#735E60] max-w-md mx-auto">
@@ -389,14 +390,14 @@ export default function DisasterManagementPage() {
                 </p>
                 <button
                   onClick={handleRunQSA}
-                  className="px-4 py-2 bg-[#28191D] text-white text-xs font-bold rounded-full uppercase tracking-wider hover:bg-[#3d272d] transition"
+                  className="px-4 py-2 bg-[#28191D] text-white text-xs font-bold rounded-full uppercase tracking-wider hover:bg-[#3d272d] transition shadow-xs"
                 >
                   Run Benchmark Now
                 </button>
               </div>
             )}
 
-            <div className="p-4 bg-white rounded-2xl border border-[#EBDCD8] text-xs text-[#735E60] space-y-1">
+            <div className="p-4 rounded-2xl glass-pill text-xs text-[#735E60] space-y-1">
               <strong className="text-[#28191D] block">Scientific Integrity & Operational Notice:</strong>
               <p>
                 ATLAS-Q runs matrix-based Quantum-Inspired Simulated Annealing on classical hardware. 

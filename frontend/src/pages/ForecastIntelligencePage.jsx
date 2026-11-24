@@ -13,7 +13,8 @@ import {
   ChevronRight,
   TrendingUp,
   Activity,
-  Maximize2
+  Maximize2,
+  Globe2
 } from 'lucide-react';
 import { 
   fetchRadarGrid, 
@@ -66,19 +67,19 @@ export default function ForecastIntelligencePage() {
   const selectedCell = trackingData?.tracking_chains?.find(c => c.cell_id === selectedCellId) || trackingData?.tracking_chains?.[0];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* 02 Header & Editorial Navigation */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center space-x-2 bg-[#D3E4B7] text-[#28191D] text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 glass-pill text-[#28191D] text-xs font-mono font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#A51F52]"></span>
             <span>02 — Forecast Intelligence</span>
             <span>•</span>
             <span>Kinematic Nowcasting & Multi-Hour Trajectory Analysis</span>
           </div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60]">
+          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">
             <Clock className="w-3.5 h-3.5" />
-            <span>NWP Update: Cycle 12:00 UTC (Next: 18:00 UTC)</span>
+            <span>NWP Assimilation Cycle 12:00 UTC</span>
           </div>
         </div>
 
@@ -93,8 +94,8 @@ export default function ForecastIntelligencePage() {
             </p>
           </div>
 
-          {/* Sub-tab Switcher (Pill style) */}
-          <div className="inline-flex p-1.5 bg-white border border-[#EBDCD8] rounded-full shadow-xs">
+          {/* Sub-tab Switcher (Glass pill style) */}
+          <div className="inline-flex p-1.5 glass-panel rounded-full shadow-xs">
             <button
               onClick={() => setActiveSubTab('cyclone')}
               className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition ${
@@ -127,7 +128,7 @@ export default function ForecastIntelligencePage() {
       {activeSubTab === 'cyclone' && selectedCyclone && (
         <div className="space-y-8">
           {/* Cyclone Metadata Banner */}
-          <div className="bg-[#FFF3F0] border border-[#EBDCD8] rounded-3xl p-6 lg:p-8 space-y-6">
+          <div className="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#EBDCD8]">
               <div className="space-y-1">
                 <div className="flex items-center space-x-3">
@@ -146,7 +147,7 @@ export default function ForecastIntelligencePage() {
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2 text-xs font-mono bg-white border border-[#EBDCD8] px-4 py-2 rounded-2xl">
+              <div className="flex items-center space-x-2 text-xs font-mono glass-pill px-4 py-2 rounded-2xl">
                 <span className="text-[#735E60]">PROVENANCE:</span>
                 <span className="font-bold text-[#A51F52]">{selectedCyclone.data_provenance}</span>
               </div>
@@ -154,7 +155,7 @@ export default function ForecastIntelligencePage() {
 
             {/* Current Intensity & Physical Parameters */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">EYE POSITION</span>
                 <span className="text-base font-mono font-bold text-[#28191D]">
                   {selectedCyclone.current_position?.lat}°N, {selectedCyclone.current_position?.lon}°E
@@ -162,7 +163,7 @@ export default function ForecastIntelligencePage() {
                 <span className="text-[10px] text-[#735E60] block">North Bay of Bengal</span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">MAX SUSTAINED WIND</span>
                 <span className="text-base font-mono font-bold text-[#A51F52]">
                   {selectedCyclone.current_position?.max_wind_kmh} km/h
@@ -170,7 +171,7 @@ export default function ForecastIntelligencePage() {
                 <span className="text-[10px] text-[#735E60] block font-mono">{selectedCyclone.current_position?.max_wind_knots} Knots (Gale)</span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">CENTRAL PRESSURE</span>
                 <span className="text-base font-mono font-bold text-[#28191D]">
                   {selectedCyclone.current_position?.central_pressure_hpa} hPa
@@ -178,7 +179,7 @@ export default function ForecastIntelligencePage() {
                 <span className="text-[10px] text-[#735E60] block">Pressure Deficit: ~22 hPa</span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">PROPAGATION VECTOR</span>
                 <span className="text-base font-mono font-bold text-[#28191D]">
                   {selectedCyclone.current_position?.movement_direction} @ {selectedCyclone.current_position?.movement_speed_kmh}
@@ -186,7 +187,7 @@ export default function ForecastIntelligencePage() {
                 <span className="text-[10px] text-[#735E60] block">Steering Flow 500hPa</span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">GALE RADIUS (R34)</span>
                 <span className="text-base font-mono font-bold text-[#28191D]">
                   {selectedCyclone.wind_radii_km?.r34_knots_gale} km
@@ -194,7 +195,7 @@ export default function ForecastIntelligencePage() {
                 <span className="text-[10px] text-[#735E60] block">NE Quadrant Extent</span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-4 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">STORM SURGE</span>
                 <span className="text-base font-mono font-bold text-[#A51F52]">
                   {selectedCyclone.landfall_estimate?.surge_height_m} meters
@@ -207,7 +208,7 @@ export default function ForecastIntelligencePage() {
           {/* Forecast Track Waypoint Table & Uncertainty Cone */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Track Waypoints Table */}
-            <div className="lg:col-span-2 bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4">
+            <div className="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#F4E3E6]">
                 <div>
                   <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
@@ -235,7 +236,6 @@ export default function ForecastIntelligencePage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F4E3E6] font-mono">
-                    {/* Historical */}
                     <tr className="bg-[#FFF3F0]/60 text-[#735E60]">
                       <td className="py-2.5 px-3 font-semibold">-6h (OBS)</td>
                       <td className="py-2.5 px-3">19.00°N, 88.30°E</td>
@@ -252,9 +252,8 @@ export default function ForecastIntelligencePage() {
                       <td className="py-2.5 px-3">VSCS</td>
                       <td className="py-2.5 px-3 text-right font-sans text-[11px] text-[#A51F52]">± 12 km radar fix</td>
                     </tr>
-                    {/* Forecast */}
                     {selectedCyclone.forecast_track?.map((pt, idx) => (
-                      <tr key={idx} className="hover:bg-[#FFF3F0]/50 transition">
+                      <tr key={idx} className="hover:bg-white/60 transition">
                         <td className="py-2.5 px-3 font-semibold text-[#28191D]">+{pt.forecast_lead_h}h Forecast</td>
                         <td className="py-2.5 px-3">{pt.lat.toFixed(2)}°N, {pt.lon.toFixed(2)}°E</td>
                         <td className="py-2.5 px-3 font-bold text-[#A51F52]">{pt.wind_kmh} km/h</td>
@@ -269,7 +268,7 @@ export default function ForecastIntelligencePage() {
             </div>
 
             {/* Landfall & Coastal Exposure Summary */}
-            <div className="bg-[#FFF3F0] border border-[#EBDCD8] rounded-3xl p-6 space-y-4 flex flex-col justify-between">
+            <div className="glass-panel rounded-3xl p-6 space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex items-center space-x-2 text-[#A51F52]">
                   <AlertTriangle className="w-4 h-4" />
@@ -285,7 +284,7 @@ export default function ForecastIntelligencePage() {
                   <strong className="text-[#A51F52]">{selectedCyclone.landfall_estimate?.surge_height_m} meters</strong>.
                 </p>
 
-                <div className="p-3.5 bg-white border border-[#EBDCD8] rounded-2xl space-y-2 text-xs">
+                <div className="p-3.5 glass-panel rounded-2xl space-y-2 text-xs border border-white/60">
                   <span className="font-bold text-[#28191D] block">Key Affected Districts:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {['South 24 Parganas', 'North 24 Parganas', 'Purba Medinipur', 'Bhadrak (OD)', 'Kendrapara (OD)'].map((d, i) => (
@@ -297,7 +296,7 @@ export default function ForecastIntelligencePage() {
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white border border-[#EBDCD8] text-[11px] text-[#735E60] font-sans space-y-1">
+              <div className="p-3 rounded-2xl glass-pill text-[11px] text-[#735E60] font-sans space-y-1">
                 <span className="font-bold text-[#28191D] block">Scientific Integrity Notice:</span>
                 <p>Cyclone track forecasts reflect hydrodynamic atmospheric equations and official meteorological bulletins. They are not generated by heuristic optimization algorithms.</p>
               </div>
@@ -312,7 +311,7 @@ export default function ForecastIntelligencePage() {
       {activeSubTab === 'thunderstorm' && (
         <div className="space-y-8">
           {/* Tracking Chains Selector */}
-          <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4">
+          <div className="glass-panel rounded-3xl p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#F4E3E6]">
               <div>
                 <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
@@ -330,7 +329,7 @@ export default function ForecastIntelligencePage() {
                     className={`px-3 py-1.5 rounded-full text-xs font-mono font-bold transition ${
                       selectedCellId === chain.cell_id
                         ? 'bg-[#A51F52] text-white shadow-xs'
-                        : 'bg-[#FFF3F0] text-[#735E60] hover:bg-[#F4E3E6]'
+                        : 'glass-pill text-[#735E60] hover:text-[#28191D]'
                     }`}
                   >
                     {chain.cell_id} ({chain.speed_kmh} km/h {chain.compass_direction})
@@ -342,7 +341,7 @@ export default function ForecastIntelligencePage() {
             {/* Selected Storm Kinematic Details */}
             {selectedCell && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8]">
+                <div className="p-4 rounded-2xl glass-panel border border-white/60">
                   <span className="text-[10px] uppercase font-bold text-[#735E60] block">CURRENT CENTROID</span>
                   <span className="text-base font-mono font-bold text-[#28191D]">
                     {selectedCell.current_position?.lat?.toFixed(2)}°N, {selectedCell.current_position?.lon?.toFixed(2)}°E
@@ -350,7 +349,7 @@ export default function ForecastIntelligencePage() {
                   <span className="text-[10px] text-[#735E60] block">Area: {selectedCell.current_position?.area_km2} km²</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8]">
+                <div className="p-4 rounded-2xl glass-panel border border-white/60">
                   <span className="text-[10px] uppercase font-bold text-[#735E60] block">PEAK REFLECTIVITY</span>
                   <span className="text-base font-mono font-bold text-[#A51F52]">
                     {selectedCell.current_position?.peak_dbz} dBZ
@@ -358,7 +357,7 @@ export default function ForecastIntelligencePage() {
                   <span className="text-[10px] text-[#735E60] block">VIL: {selectedCell.current_position?.vil_kg_m2} kg/m²</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8]">
+                <div className="p-4 rounded-2xl glass-panel border border-white/60">
                   <span className="text-[10px] uppercase font-bold text-[#735E60] block">PROPAGATION SPEED</span>
                   <span className="text-base font-mono font-bold text-[#28191D]">
                     {selectedCell.speed_kmh} km/h
@@ -366,7 +365,7 @@ export default function ForecastIntelligencePage() {
                   <span className="text-[10px] text-[#735E60] block">Azimuth: {selectedCell.heading_deg}° ({selectedCell.compass_direction})</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8]">
+                <div className="p-4 rounded-2xl glass-panel border border-white/60">
                   <span className="text-[10px] uppercase font-bold text-[#735E60] block">STATUS</span>
                   <span className="text-base font-bold text-[#28191D] uppercase">
                     {selectedCell.status}
@@ -380,7 +379,7 @@ export default function ForecastIntelligencePage() {
           {/* Trajectory Table & Lightning Jump Panel */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Trajectory Extrapolation (T-30 to T+60) */}
-            <div className="lg:col-span-2 bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4">
+            <div className="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#F4E3E6]">
                 <h4 className="text-base font-bold text-[#28191D] font-headline lowercase">
                   0–60 minute kinematic trajectory forecast.
@@ -417,7 +416,7 @@ export default function ForecastIntelligencePage() {
                       <td className="py-2.5 px-3 text-right text-[#A51F52] font-sans">± 2.5 km (Radar)</td>
                     </tr>
                     {selectedCell?.projected_path?.map((p, i) => (
-                      <tr key={`p-${i}`} className="hover:bg-[#FFF3F0]/40 transition">
+                      <tr key={`p-${i}`} className="hover:bg-white/60 transition">
                         <td className="py-2.5 px-3 font-semibold text-[#28191D]">+{p.lead_time_minutes}m</td>
                         <td className="py-2.5 px-3">{p.lat.toFixed(2)}°N</td>
                         <td className="py-2.5 px-3">{p.lon.toFixed(2)}°E</td>
@@ -430,8 +429,8 @@ export default function ForecastIntelligencePage() {
               </div>
             </div>
 
-            {/* Lightning Intelligence & Jump Detection */}
-            <div className="bg-[#FFF3F0] border border-[#EBDCD8] rounded-3xl p-6 space-y-5">
+            {/* Lightning Intelligence & Jump Detection in Glass */}
+            <div className="glass-panel rounded-3xl p-6 space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-[#EBDCD8]">
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 text-[#d97706]" />
@@ -446,7 +445,7 @@ export default function ForecastIntelligencePage() {
 
               {lightningData && (
                 <div className="space-y-4 text-xs font-sans">
-                  <div className="p-4 bg-white rounded-2xl border border-[#EBDCD8] space-y-2">
+                  <div className="p-4 glass-panel rounded-2xl border border-white/60 space-y-2">
                     <span className="text-[10px] uppercase font-bold text-[#735E60] block">FLASH PARTITIONING</span>
                     <div className="flex items-center justify-between font-mono">
                       <span>Total Flashes:</span>
@@ -466,7 +465,7 @@ export default function ForecastIntelligencePage() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-[#F4E3E6]/60 rounded-2xl border border-[#ebd0d6] space-y-1.5">
+                  <div className="p-4 rounded-2xl border border-[#ebd0d6] space-y-1.5" style={{ background: 'rgba(244, 227, 230, 0.7)' }}>
                     <div className="flex items-center space-x-1.5 text-[#A51F52] font-bold">
                       <TrendingUp className="w-4 h-4" />
                       <span>Lightning Jump Indicator</span>

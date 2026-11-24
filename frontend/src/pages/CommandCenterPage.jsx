@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import WeatherMap from '../components/WeatherMap';
+import Globe3D from '../components/Globe3D';
 import { 
   Activity, 
   ShieldAlert, 
@@ -14,7 +14,9 @@ import {
   Play, 
   CheckCircle2, 
   Clock,
-  Waves
+  Waves,
+  Eye,
+  Globe2
 } from 'lucide-react';
 import { fetchActiveCyclones } from '../services/api';
 
@@ -49,17 +51,20 @@ export default function CommandCenterPage({
   const activeAlerts = riskData?.active_alerts || [];
 
   return (
-    <div className="space-y-10">
-      {/* 01 Header & Editorial Hero */}
+    <div className="space-y-8">
+      {/* 01 Header & Editorial Hero with Glassmorphism */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center space-x-2 bg-[#D3E4B7] text-[#28191D] text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 glass-pill text-[#28191D] text-xs font-mono font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#A51F52] animate-ping"></span>
             <span>01 — Command Center</span>
             <span>•</span>
-            <span>Real-Time Multi-Hazard Operations</span>
+            <span className="flex items-center space-x-1">
+              <Globe2 className="w-3.5 h-3.5 text-[#A51F52]" />
+              <span>3D Earth Intelligence</span>
+            </span>
           </div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60]">
+          <div className="flex items-center space-x-2 text-xs font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             <span>Cycle: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} UTC</span>
           </div>
@@ -71,14 +76,14 @@ export default function CommandCenterPage({
               operational command.
             </h1>
             <p className="text-base sm:text-lg text-[#735E60] font-sans leading-relaxed">
-              Unified situational awareness for severe convective thunderstorms, tropical cyclones, 
-              lightning jump hazards, and multi-sector disaster response across the Indian subcontinent.
+              Real-time atmospheric intelligence uniting an interactive 3D Earth focused on the Indian subcontinent, 
+              convective thunderstorm nowcasting, tropical cyclone track forecasting, and multi-sector disaster response.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onLaunchSimulation}
-              className="inline-flex items-center space-x-2 bg-[#D3E4B7] hover:bg-[#c4db9e] text-[#28191D] font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-full transition shadow-xs"
+              className="inline-flex items-center space-x-2 glass-pill hover:bg-white text-[#28191D] font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-full transition shadow-xs"
             >
               <Play className="w-3.5 h-3.5 fill-[#28191D]" />
               <span>Simulate Scenarios</span>
@@ -95,12 +100,12 @@ export default function CommandCenterPage({
         </div>
       </section>
 
-      {/* Primary KPI Grid (High Whitespace & Minimal Editorial Borders) */}
+      {/* Floating Frosted Glass Metric Grid */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Active Thunderstorms */}
         <div 
           onClick={onNavigateToForecast}
-          className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-3 cursor-pointer hover:shadow-md transition group"
+          className="glass-panel glass-card-hover rounded-3xl p-6 space-y-3 cursor-pointer group"
         >
           <div className="flex items-center justify-between text-xs text-[#735E60]">
             <span className="font-mono uppercase font-bold tracking-wider">THUNDERSTORM CELLS</span>
@@ -128,7 +133,8 @@ export default function CommandCenterPage({
         {/* Metric 2: Active Cyclone Systems */}
         <div 
           onClick={onNavigateToForecast}
-          className="bg-[#F4E3E6]/60 border border-[#ebd0d6] rounded-3xl p-6 space-y-3 cursor-pointer hover:shadow-md transition group"
+          className="glass-panel glass-card-hover rounded-3xl p-6 space-y-3 cursor-pointer group border-[#ebd0d6]"
+          style={{ background: 'rgba(244, 227, 230, 0.65)' }}
         >
           <div className="flex items-center justify-between text-xs text-[#735E60]">
             <span className="font-mono uppercase font-bold tracking-wider text-[#A51F52]">TROPICAL CYCLONE</span>
@@ -148,7 +154,7 @@ export default function CommandCenterPage({
               <span>Central: 978 hPa</span>
             </span>
             <span className="group-hover:translate-x-1 transition text-[#A51F52] font-semibold text-[11px] flex items-center">
-              Track Cone <ArrowUpRight className="w-3 h-3 ml-0.5" />
+              3D Track <ArrowUpRight className="w-3 h-3 ml-0.5" />
             </span>
           </div>
         </div>
@@ -156,7 +162,7 @@ export default function CommandCenterPage({
         {/* Metric 3: Total Lightning Density */}
         <div 
           onClick={onNavigateToForecast}
-          className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-3 cursor-pointer hover:shadow-md transition group"
+          className="glass-panel glass-card-hover rounded-3xl p-6 space-y-3 cursor-pointer group"
         >
           <div className="flex items-center justify-between text-xs text-[#735E60]">
             <span className="font-mono uppercase font-bold tracking-wider">LIGHTNING FLASH RATE</span>
@@ -181,10 +187,10 @@ export default function CommandCenterPage({
           </div>
         </div>
 
-        {/* Metric 4: Disaster Response Readiness */}
+        {/* Metric 4: Disaster Readiness */}
         <div 
           onClick={onNavigateToDisaster}
-          className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-3 cursor-pointer hover:shadow-md transition group"
+          className="glass-panel glass-card-hover rounded-3xl p-6 space-y-3 cursor-pointer group"
         >
           <div className="flex items-center justify-between text-xs text-[#735E60]">
             <span className="font-mono uppercase font-bold tracking-wider">SHELTER READINESS</span>
@@ -210,44 +216,46 @@ export default function CommandCenterPage({
         </div>
       </section>
 
-      {/* Main Geographic Multi-Hazard Map Workspace */}
+      {/* Main 3D Earth Globe Geographic Workspace */}
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
-              live multi-hazard geographic monitor.
+              3d india geographic earth & atmospheric layers.
             </h2>
             <p className="text-xs text-[#735E60]">
-              Interactive geospatial fusion of S-Band Doppler radar cells, tropical cyclone tracks, lightning strikes, and risk cones.
+              Interactive WebGL 3D globe visualization focused on the Indian subcontinent with 3D storm cylinders, cyclone trajectory paths, and lightning observation points.
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-[11px] font-mono text-[#735E60] bg-white border border-[#EBDCD8] px-3 py-1 rounded-full">
-              Projection: EPSG:4326 Azimuthal
+            <span className="text-[11px] font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">
+              Engine: CesiumJS 3D • WGS84
             </span>
           </div>
         </div>
 
-        {/* Map Container */}
-        <div className="bg-white border border-[#EBDCD8] rounded-3xl p-3 sm:p-4 shadow-sm overflow-hidden">
-          <WeatherMap
-            storms={storms}
-            radarStations={radarStations}
-            lightningEvents={lightningEvents}
-            selectedStorm={selectedStorm}
-            onSelectStorm={(st) => {
-              setSelectedStorm(st);
-              onOpenStormModal(st);
-            }}
-          />
-        </div>
+        {/* 3D Globe Container */}
+        <Globe3D
+          storms={storms}
+          radarStations={radarStations}
+          lightningEvents={lightningEvents}
+          cyclones={activeCyclones}
+          selectedStorm={selectedStorm}
+          onSelectStorm={(st) => {
+            setSelectedStorm(st);
+            onOpenStormModal(st);
+          }}
+          onSelectCyclone={(cyc) => {
+            setSelectedCyclone(cyc);
+          }}
+        />
       </section>
 
-      {/* Cyclone & Severe Incident Spotlight */}
+      {/* Cyclone & Severe Incident Spotlight in Glass Panels */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cyclone Remal / Tropical Storm Card */}
         {selectedCyclone && (
-          <div className="lg:col-span-2 bg-[#FFF3F0] border border-[#EBDCD8] rounded-3xl p-6 space-y-5">
+          <div className="lg:col-span-2 glass-panel rounded-3xl p-6 lg:p-8 space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-[#EBDCD8]">
               <div className="flex items-center space-x-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#A51F52] animate-pulse"></span>
@@ -261,7 +269,7 @@ export default function CommandCenterPage({
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-white p-3.5 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-3.5 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">CURRENT POSITION</span>
                 <span className="text-sm font-mono font-bold text-[#28191D]">
                   {selectedCyclone.current_position?.lat}°N, {selectedCyclone.current_position?.lon}°E
@@ -269,7 +277,7 @@ export default function CommandCenterPage({
                 <span className="text-[10px] text-[#735E60] block">Heading: {selectedCyclone.current_position?.movement_direction} @ {selectedCyclone.current_position?.movement_speed_kmh} km/h</span>
               </div>
 
-              <div className="bg-white p-3.5 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-3.5 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">CENTRAL PRESSURE</span>
                 <span className="text-sm font-mono font-bold text-[#A51F52]">
                   {selectedCyclone.current_position?.central_pressure_hpa} hPa
@@ -277,7 +285,7 @@ export default function CommandCenterPage({
                 <span className="text-[10px] text-[#735E60] block">Eye Diameter: {selectedCyclone.current_position?.eye_diameter_km} km</span>
               </div>
 
-              <div className="bg-white p-3.5 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-3.5 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">MAX SUSTAINED WIND</span>
                 <span className="text-sm font-mono font-bold text-[#28191D]">
                   {selectedCyclone.current_position?.max_wind_kmh} km/h
@@ -285,7 +293,7 @@ export default function CommandCenterPage({
                 <span className="text-[10px] text-[#A51F52] font-semibold block">Gusts: {selectedCyclone.current_position?.gust_kmh} km/h</span>
               </div>
 
-              <div className="bg-white p-3.5 rounded-2xl border border-[#EBDCD8]">
+              <div className="glass-panel p-3.5 rounded-2xl border border-white/60">
                 <span className="text-[10px] uppercase font-bold text-[#735E60] block">LANDFALL PROJECTION</span>
                 <span className="text-sm font-bold text-[#28191D]">
                   {selectedCyclone.landfall_estimate?.expected_time_utc}
@@ -294,13 +302,13 @@ export default function CommandCenterPage({
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 border border-[#EBDCD8] space-y-2">
+            <div className="glass-panel rounded-2xl p-4 border border-white/60 space-y-2">
               <span className="text-xs font-bold text-[#28191D] uppercase tracking-wider block">
                 Official Coastal Impact Warnings
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 {selectedCyclone.impact_warnings?.map((w, idx) => (
-                  <div key={idx} className="flex items-start space-x-2 p-2 rounded-xl bg-[#F4E3E6]/30 border border-[#F4E3E6]">
+                  <div key={idx} className="flex items-start space-x-2 p-2.5 rounded-xl glass-pill">
                     <AlertTriangle className="w-4 h-4 text-[#A51F52] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-[#28191D]">{w.type}: </span>
@@ -313,8 +321,8 @@ export default function CommandCenterPage({
           </div>
         )}
 
-        {/* Active Alerts & Ticker */}
-        <div className="bg-white border border-[#EBDCD8] rounded-3xl p-6 space-y-4 flex flex-col justify-between">
+        {/* Active Alerts in Frosted Glass */}
+        <div className="glass-panel rounded-3xl p-6 space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between pb-3 border-b border-[#F4E3E6]">
               <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
@@ -327,7 +335,7 @@ export default function CommandCenterPage({
 
             <div className="space-y-2.5">
               {activeAlerts.slice(0, 3).map((alert, idx) => (
-                <div key={idx} className="p-3 rounded-2xl bg-[#FFF3F0] border border-[#EBDCD8] space-y-1">
+                <div key={idx} className="p-3 rounded-2xl glass-pill space-y-1">
                   <div className="flex items-center justify-between text-xs font-semibold">
                     <span className="text-[#A51F52]">{alert.type}</span>
                     <span className="text-[10px] font-mono text-[#735E60]">{alert.severity}</span>
@@ -341,7 +349,7 @@ export default function CommandCenterPage({
 
           <button
             onClick={onNavigateToForecast}
-            className="w-full py-2.5 rounded-full bg-[#28191D] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#3d272d] transition flex items-center justify-center space-x-1.5"
+            className="w-full py-2.5 rounded-full bg-[#28191D] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#3d272d] transition flex items-center justify-center space-x-1.5 shadow-xs"
           >
             <span>Explore Forecast Intelligence</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

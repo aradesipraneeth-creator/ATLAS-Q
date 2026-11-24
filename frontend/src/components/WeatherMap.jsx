@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { ZoomIn, ZoomOut, RotateCcw, Layers, Zap, Radio, ShieldAlert, Navigation, Info, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { ZoomIn, ZoomOut, RotateCcw, Layers, Radio, Navigation, AlertTriangle, Crosshair } from 'lucide-react';
 
 export default function WeatherMap({
   storms = [],
@@ -8,27 +8,22 @@ export default function WeatherMap({
   selectedStorm,
   onSelectStorm
 }) {
-  // Zoom & Pan state
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  // Layer visibility toggles
+  // Overlays
   const [showStorms, setShowStorms] = useState(true);
   const [showRadar, setShowRadar] = useState(true);
   const [showLightning, setShowLightning] = useState(true);
   const [showRiskZones, setShowRiskZones] = useState(true);
   const [showTrajectories, setShowTrajectories] = useState(true);
 
-  // SVG coordinate transformation for India:
-  // Longitude range: 68°E to 98°E (width = 30°)
-  // Latitude range: 8°N to 37°N (height = 29°)
   const SVG_WIDTH = 900;
   const SVG_HEIGHT = 800;
 
   const projectCoord = (lat, lon) => {
-    // Mercator-like normalized projection bounded to Indian subcontinent
     const minLon = 68.0;
     const maxLon = 97.5;
     const minLat = 7.5;
@@ -54,45 +49,18 @@ export default function WeatherMap({
 
   const handleMouseUp = () => setIsDragging(false);
 
-  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.25, 3.0));
-  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.25, 0.75));
-  const handleReset = () => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  };
-
-  // Simplified India perimeter outline path coordinates
+  // Simplified India coastline/perimeter
   const indiaPerimeterCoords = [
-    { lat: 35.5, lon: 74.5 },
-    { lat: 35.8, lon: 77.0 },
-    { lat: 34.0, lon: 78.5 },
-    { lat: 32.5, lon: 79.0 },
-    { lat: 30.5, lon: 81.0 },
-    { lat: 28.5, lon: 82.0 },
-    { lat: 27.5, lon: 88.5 },
-    { lat: 28.0, lon: 96.5 },
-    { lat: 27.0, lon: 97.0 },
-    { lat: 24.5, lon: 94.5 },
-    { lat: 22.5, lon: 92.5 },
-    { lat: 21.5, lon: 89.0 },
-    { lat: 21.0, lon: 87.0 },
-    { lat: 19.5, lon: 85.5 },
-    { lat: 17.5, lon: 83.5 },
-    { lat: 15.0, lon: 80.2 },
-    { lat: 12.0, lon: 80.0 },
-    { lat: 10.0, lon: 79.8 },
-    { lat: 8.2,  lon: 77.5 }, // Kanyakumari
-    { lat: 9.8,  lon: 76.2 },
-    { lat: 13.0, lon: 74.8 },
-    { lat: 15.5, lon: 73.8 },
-    { lat: 19.0, lon: 72.8 }, // Mumbai
-    { lat: 21.0, lon: 72.6 },
-    { lat: 22.8, lon: 69.5 }, // Gujarat coast
-    { lat: 24.0, lon: 68.8 },
-    { lat: 25.5, lon: 71.0 },
-    { lat: 28.0, lon: 70.5 },
-    { lat: 31.5, lon: 74.5 },
-    { lat: 33.5, lon: 74.0 }
+    { lat: 35.5, lon: 74.5 }, { lat: 35.8, lon: 77.0 }, { lat: 34.0, lon: 78.5 },
+    { lat: 32.5, lon: 79.0 }, { lat: 30.5, lon: 81.0 }, { lat: 28.5, lon: 82.0 },
+    { lat: 27.5, lon: 88.5 }, { lat: 28.0, lon: 96.5 }, { lat: 27.0, lon: 97.0 },
+    { lat: 24.5, lon: 94.5 }, { lat: 22.5, lon: 92.5 }, { lat: 21.5, lon: 89.0 },
+    { lat: 21.0, lon: 87.0 }, { lat: 19.5, lon: 85.5 }, { lat: 17.5, lon: 83.5 },
+    { lat: 15.0, lon: 80.2 }, { lat: 12.0, lon: 80.0 }, { lat: 10.0, lon: 79.8 },
+    { lat: 8.2,  lon: 77.5 }, { lat: 9.8,  lon: 76.2 }, { lat: 13.0, lon: 74.8 },
+    { lat: 15.5, lon: 73.8 }, { lat: 19.0, lon: 72.8 }, { lat: 21.0, lon: 72.6 },
+    { lat: 22.8, lon: 69.5 }, { lat: 24.0, lon: 68.8 }, { lat: 25.5, lon: 71.0 },
+    { lat: 28.0, lon: 70.5 }, { lat: 31.5, lon: 74.5 }, { lat: 33.5, lon: 74.0 }
   ];
 
   const indiaPathD = indiaPerimeterCoords
@@ -103,53 +71,47 @@ export default function WeatherMap({
     .join(' ') + ' Z';
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-      {/* Top Map Toolbar */}
-      <div className="p-3 sm:p-4 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-2">
-          <div className="p-1.5 rounded-lg bg-sky-100 text-sky-700">
+    <div className="bg-[#FFFFFF] border border-[#EBDCD8] rounded-[2rem] overflow-hidden shadow-xs">
+      {/* Top Map Toolbar (Editorial Luxury Styling) */}
+      <div className="p-4 sm:p-5 border-b border-[#F4E3E6] bg-[#FFF3F0]/60 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-full bg-[#D3E4B7] text-[#28191D] flex items-center justify-center font-bold">
             <Radio className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-              SYNOPTIC RADAR & NOWCAST OBSERVATION MAP
-              <span className="text-[10px] font-mono bg-sky-100 text-sky-800 px-2 py-0.5 rounded border border-sky-200">
+            <h3 className="text-base font-extrabold text-[#28191D] font-headline lowercase flex items-center gap-2">
+              interactive meteorological map
+              <span className="text-[10px] font-mono bg-[#D3E4B7] text-[#28191D] px-2 py-0.5 rounded-full font-bold">
                 INDIA SECTOR
               </span>
             </h3>
-            <p className="text-[11px] text-slate-500">
-              Interactive vector geospatial projection with Doppler DWR coverage rings & cell trajectories
+            <p className="text-xs text-[#735E60]">
+              Vector GIS projection with Doppler DWR coverage rings & cell trajectories
             </p>
           </div>
         </div>
 
-        {/* Demo Data Notice */}
+        {/* Controls & Layer Status */}
         <div className="flex items-center space-x-2">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-300">
-            <AlertTriangle className="w-3 h-3 mr-1 text-amber-600" />
-            DEMO DATA
-          </span>
-
-          {/* Controls */}
-          <div className="flex items-center space-x-1 bg-white border border-slate-200 rounded-lg p-1 shadow-2xs">
+          <div className="flex items-center space-x-1 bg-[#FFF3F0] border border-[#EBDCD8] rounded-full p-1 shadow-2xs">
             <button
-              onClick={handleZoomIn}
+              onClick={() => setZoom((prev) => Math.min(prev + 0.25, 3.0))}
               title="Zoom In"
-              className="p-1.5 hover:bg-slate-100 text-slate-700 rounded transition"
+              className="p-1.5 hover:bg-[#F4E3E6] text-[#28191D] rounded-full transition"
             >
               <ZoomIn className="w-4 h-4" />
             </button>
             <button
-              onClick={handleZoomOut}
+              onClick={() => setZoom((prev) => Math.max(prev - 0.25, 0.75))}
               title="Zoom Out"
-              className="p-1.5 hover:bg-slate-100 text-slate-700 rounded transition"
+              className="p-1.5 hover:bg-[#F4E3E6] text-[#28191D] rounded-full transition"
             >
               <ZoomOut className="w-4 h-4" />
             </button>
             <button
-              onClick={handleReset}
+              onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
               title="Reset View"
-              className="p-1.5 hover:bg-slate-100 text-slate-700 rounded transition"
+              className="p-1.5 hover:bg-[#F4E3E6] text-[#28191D] rounded-full transition"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -158,55 +120,55 @@ export default function WeatherMap({
       </div>
 
       {/* Layer Visibility Pills */}
-      <div className="px-4 py-2 border-b border-slate-100 bg-white flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-slate-400 font-medium text-[11px] flex items-center gap-1 mr-1">
-          <Layers className="w-3.5 h-3.5" /> Overlays:
+      <div className="px-5 py-2.5 border-b border-[#F4E3E6] bg-[#FFFFFF] flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-[#735E60] font-medium text-[11px] flex items-center gap-1 mr-1">
+          <Layers className="w-3.5 h-3.5" /> Layer Overlays:
         </span>
         <button
           onClick={() => setShowStorms(!showStorms)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
-            showStorms ? 'bg-sky-50 text-sky-800 border-sky-300' : 'bg-slate-100 text-slate-400 border-slate-200'
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+            showStorms ? 'bg-[#28191D] text-[#FFF3F0]' : 'bg-[#FFF3F0] text-[#735E60] border border-[#EBDCD8]'
           }`}
         >
           ● Storm Cells ({storms.length})
         </button>
         <button
           onClick={() => setShowLightning(!showLightning)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
-            showLightning ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-slate-100 text-slate-400 border-slate-200'
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+            showLightning ? 'bg-[#A51F52] text-[#FFF3F0]' : 'bg-[#FFF3F0] text-[#735E60] border border-[#EBDCD8]'
           }`}
         >
           ⚡ Lightning Strikes ({lightningEvents.length})
         </button>
         <button
           onClick={() => setShowRadar(!showRadar)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
-            showRadar ? 'bg-indigo-50 text-indigo-800 border-indigo-300' : 'bg-slate-100 text-slate-400 border-slate-200'
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+            showRadar ? 'bg-[#D3E4B7] text-[#28191D]' : 'bg-[#FFF3F0] text-[#735E60] border border-[#EBDCD8]'
           }`}
         >
           ◎ Radar Coverage ({radarStations.length})
         </button>
         <button
           onClick={() => setShowRiskZones(!showRiskZones)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
-            showRiskZones ? 'bg-rose-50 text-rose-800 border-rose-300' : 'bg-slate-100 text-slate-400 border-slate-200'
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+            showRiskZones ? 'bg-[#F4E3E6] text-[#A51F52] font-bold' : 'bg-[#FFF3F0] text-[#735E60] border border-[#EBDCD8]'
           }`}
         >
-          ☵ Severe Risk Zones
+          ☵ Hazard Zones
         </button>
         <button
           onClick={() => setShowTrajectories(!showTrajectories)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
-            showTrajectories ? 'bg-blue-50 text-blue-800 border-blue-300' : 'bg-slate-100 text-slate-400 border-slate-200'
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition ${
+            showTrajectories ? 'bg-[#28191D] text-[#FFF3F0]' : 'bg-[#FFF3F0] text-[#735E60] border border-[#EBDCD8]'
           }`}
         >
-          ⇢ Storm Trajectories
+          ⇢ Extrapolations
         </button>
       </div>
 
-      {/* Main Map Canvas Area */}
+      {/* Main Map SVG Canvas */}
       <div
-        className="relative w-full h-[520px] sm:h-[580px] bg-slate-50 cursor-grab active:cursor-grabbing overflow-hidden select-none"
+        className="relative w-full h-[520px] sm:h-[580px] bg-[#FFF3F0] cursor-grab active:cursor-grabbing overflow-hidden select-none"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -222,34 +184,31 @@ export default function WeatherMap({
           }}
         >
           <defs>
-            {/* Grid Pattern */}
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="0.8" />
+            <pattern id="editorialGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#F4E3E6" strokeWidth="0.8" />
             </pattern>
-            {/* Radar scan gradient */}
-            <radialGradient id="radarPulseGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.3" />
-              <stop offset="70%" stopColor="#0284c7" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.0" />
+            <radialGradient id="editorialRadarGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#D3E4B7" stopOpacity="0.45" />
+              <stop offset="70%" stopColor="#D3E4B7" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#D3E4B7" stopOpacity="0.0" />
             </radialGradient>
-            {/* High risk zone gradient */}
-            <radialGradient id="highRiskGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ef4444" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#ef4444" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
+            <radialGradient id="editorialRiskGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#A51F52" stopOpacity="0.35" />
+              <stop offset="70%" stopColor="#A51F52" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#A51F52" stopOpacity="0.0" />
             </radialGradient>
           </defs>
 
           {/* Background Grid */}
-          <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill="url(#grid)" />
+          <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill="url(#editorialGrid)" />
 
-          {/* Coordinate latitude/longitude reference lines */}
+          {/* Coordinate latitude/longitude lines */}
           {[12, 16, 20, 24, 28, 32].map((lat) => {
             const { y } = projectCoord(lat, 68);
             return (
               <g key={`lat-${lat}`}>
-                <line x1="40" y1={y} x2={SVG_WIDTH - 40} y2={y} stroke="#cbd5e1" strokeDasharray="3,4" strokeWidth="0.6" />
-                <text x="45" y={y - 4} fontSize="9" fill="#94a3b8" fontFamily="monospace">
+                <line x1="40" y1={y} x2={SVG_WIDTH - 40} y2={y} stroke="#EBDCD8" strokeDasharray="3,4" strokeWidth="0.8" />
+                <text x="45" y={y - 4} fontSize="9" fill="#735E60" fontFamily="monospace">
                   {lat}°N
                 </text>
               </g>
@@ -259,55 +218,55 @@ export default function WeatherMap({
             const { x } = projectCoord(8, lon);
             return (
               <g key={`lon-${lon}`}>
-                <line x1={x} y1="40" x2={x} y2={SVG_HEIGHT - 40} stroke="#cbd5e1" strokeDasharray="3,4" strokeWidth="0.6" />
-                <text x={x + 3} y={SVG_HEIGHT - 45} fontSize="9" fill="#94a3b8" fontFamily="monospace">
+                <line x1={x} y1="40" x2={x} y2={SVG_HEIGHT - 40} stroke="#EBDCD8" strokeDasharray="3,4" strokeWidth="0.8" />
+                <text x={x + 3} y={SVG_HEIGHT - 45} fontSize="9" fill="#735E60" fontFamily="monospace">
                   {lon}°E
                 </text>
               </g>
             );
           })}
 
-          {/* India Boundary Shape */}
+          {/* India Landmass Vector */}
           <path
             d={indiaPathD}
-            fill="#f1f5f9"
-            stroke="#94a3b8"
-            strokeWidth="1.8"
+            fill="#FFFFFF"
+            stroke="#735E60"
+            strokeWidth="1.6"
             strokeLinejoin="round"
             className="filter drop-shadow-xs"
           />
 
-          {/* Severe Risk Zones Overlay */}
+          {/* Severe Risk Zones */}
           {showRiskZones && (
             <g className="risk-zones">
-              {/* Bengal - Odisha Convective Belt */}
+              {/* Bengal - Odisha Zone */}
               {(() => {
-                const center = projectCoord(22.0, 87.0);
+                const c = projectCoord(22.0, 87.0);
                 return (
                   <ellipse
-                    cx={center.x}
-                    cy={center.y}
+                    cx={c.x}
+                    cy={c.y}
                     rx="85"
                     ry="65"
-                    fill="url(#highRiskGrad)"
-                    stroke="#ef4444"
-                    strokeWidth="1.2"
+                    fill="url(#editorialRiskGrad)"
+                    stroke="#A51F52"
+                    strokeWidth="1.5"
                     strokeDasharray="4,3"
                   />
                 );
               })()}
               {/* NCR Pre-frontal alert */}
               {(() => {
-                const center = projectCoord(28.6, 77.2);
+                const c = projectCoord(28.6, 77.2);
                 return (
                   <circle
-                    cx={center.x}
-                    cy={center.y}
+                    cx={c.x}
+                    cy={c.y}
                     r="45"
                     fill="#f59e0b"
-                    fillOpacity="0.12"
+                    fillOpacity="0.15"
                     stroke="#f59e0b"
-                    strokeWidth="1"
+                    strokeWidth="1.2"
                     strokeDasharray="3,2"
                   />
                 );
@@ -315,42 +274,41 @@ export default function WeatherMap({
             </g>
           )}
 
-          {/* Doppler Radar Stations & Coverage Circles */}
+          {/* Doppler Radar Stations */}
           {showRadar &&
             radarStations.map((r) => {
               const pos = projectCoord(r.lat, r.lon);
-              const radarRadius = 55; // represents ~250km radar coverage
+              const radarRadius = 55;
               return (
-                <g key={r.code} className="radar-station group">
+                <g key={r.code} className="radar-station">
                   <circle
                     cx={pos.x}
                     cy={pos.y}
                     r={radarRadius}
-                    fill="url(#radarPulseGrad)"
-                    stroke="#0284c7"
-                    strokeWidth="0.8"
+                    fill="url(#editorialRadarGrad)"
+                    stroke="#D3E4B7"
+                    strokeWidth="1.2"
                     strokeDasharray="3,3"
-                    className="animate-radar-pulse"
                   />
-                  {/* Rotating sweep line */}
+                  {/* Sweep Line */}
                   <line
                     x1={pos.x}
                     y1={pos.y}
                     x2={pos.x + radarRadius * 0.8}
                     y2={pos.y - radarRadius * 0.8}
-                    stroke="#0284c7"
+                    stroke="#735E60"
                     strokeWidth="1"
-                    strokeOpacity="0.5"
+                    strokeOpacity="0.4"
                     className="animate-radar-sweep"
                   />
-                  {/* Tower Point */}
-                  <circle cx={pos.x} cy={pos.y} r="3.5" fill="#0369a1" stroke="#ffffff" strokeWidth="1.5" />
+                  {/* Station Marker */}
+                  <circle cx={pos.x} cy={pos.y} r="3.5" fill="#28191D" stroke="#FFFFFF" strokeWidth="1.5" />
                   <text
                     x={pos.x + 6}
                     y={pos.y + 3}
                     fontSize="9"
-                    fontWeight="600"
-                    fill="#1e293b"
+                    fontWeight="700"
+                    fill="#28191D"
                     fontFamily="monospace"
                   >
                     {r.name}
@@ -372,15 +330,13 @@ export default function WeatherMap({
 
               return (
                 <g key={`traj-${storm.id}`}>
-                  {/* Trajectory line */}
                   <path
                     d={pathData}
                     fill="none"
-                    stroke={isSelected ? '#0284c7' : '#94a3b8'}
+                    stroke={isSelected ? '#A51F52' : '#735E60'}
                     strokeWidth={isSelected ? '2.5' : '1.5'}
                     strokeDasharray={isSelected ? 'none' : '4,3'}
                   />
-                  {/* Waypoint nodes */}
                   {storm.trajectory.map((pt, idx) => {
                     const coord = projectCoord(pt.lat, pt.lon);
                     const isNow = pt.time_label === 'NOW';
@@ -392,18 +348,17 @@ export default function WeatherMap({
                           cx={coord.x}
                           cy={coord.y}
                           r={isNow ? 5 : 3}
-                          fill={isNow ? '#ef4444' : isPast ? '#64748b' : '#38bdf8'}
-                          stroke="#ffffff"
+                          fill={isNow ? '#A51F52' : isPast ? '#735E60' : '#D3E4B7'}
+                          stroke="#FFFFFF"
                           strokeWidth="1"
                         />
-                        {/* Waypoint time label on selected storm or NOW */}
                         {(isSelected || isNow) && (
                           <text
                             x={coord.x + 6}
                             y={coord.y - 4}
                             fontSize="8"
                             fontWeight={isNow ? '700' : '500'}
-                            fill={isNow ? '#dc2626' : '#475569'}
+                            fill={isNow ? '#A51F52' : '#735E60'}
                             fontFamily="monospace"
                           >
                             {pt.time_label}
@@ -422,28 +377,25 @@ export default function WeatherMap({
               const pos = projectCoord(lgt.lat, lgt.lon);
               return (
                 <g key={lgt.id}>
-                  <circle cx={pos.x} cy={pos.y} r="6" fill="#f59e0b" fillOpacity="0.25" className="animate-ping" />
+                  <circle cx={pos.x} cy={pos.y} r="6" fill="#A51F52" fillOpacity="0.25" className="animate-ping" />
                   <polygon
                     points={`${pos.x},${pos.y - 6} ${pos.x - 3},${pos.y} ${pos.x + 1},${pos.y} ${pos.x - 1},${pos.y + 6} ${pos.x + 4},${pos.y - 1} ${pos.x},${pos.y - 1}`}
-                    fill="#f59e0b"
-                    stroke="#b45309"
+                    fill="#A51F52"
+                    stroke="#FFFFFF"
                     strokeWidth="0.5"
                   />
                 </g>
               );
             })}
 
-          {/* Active Storm Cells (Clickable Target Nodes) */}
+          {/* Active Storm Cells */}
           {showStorms &&
             storms.map((storm) => {
               const pos = projectCoord(storm.lat, storm.lon);
               const isSelected = selectedStorm?.id === storm.id;
-
-              // Color determination based on reflectivity dBZ
               const isHigh = storm.intensity_dbz >= 50;
               const isModerate = storm.intensity_dbz >= 40 && storm.intensity_dbz < 50;
-              const stormColor = isHigh ? '#dc2626' : isModerate ? '#d97706' : '#0284c7';
-              const ringColor = isHigh ? '#fca5a5' : isModerate ? '#fde68a' : '#bae6fd';
+              const stormColor = isHigh ? '#A51F52' : isModerate ? '#d97706' : '#28191D';
 
               return (
                 <g
@@ -454,26 +406,23 @@ export default function WeatherMap({
                   }}
                   className="cursor-pointer group"
                 >
-                  {/* Outer pulse indicator */}
                   <circle
                     cx={pos.x}
                     cy={pos.y}
-                    r={isSelected ? 20 : 15}
-                    fill={ringColor}
-                    fillOpacity="0.5"
-                    className="transition-all duration-300"
+                    r={isSelected ? 18 : 14}
+                    fill={isHigh ? '#F4E3E6' : '#D3E4B7'}
+                    fillOpacity="0.65"
                   />
-                  {/* Main storm core */}
                   <circle
                     cx={pos.x}
                     cy={pos.y}
                     r={isSelected ? 9 : 7}
                     fill={stormColor}
-                    stroke="#ffffff"
+                    stroke="#FFFFFF"
                     strokeWidth="2"
                     className="filter drop-shadow-sm group-hover:scale-125 transition-transform"
                   />
-                  {/* Direction indicator arrow */}
+                  {/* Direction Vector */}
                   {(() => {
                     const rad = (storm.movement_direction_deg * Math.PI) / 180;
                     const arrowLen = 18;
@@ -491,24 +440,23 @@ export default function WeatherMap({
                       />
                     );
                   })()}
-                  {/* Storm ID Tag */}
+                  {/* Cell Label Pill */}
                   <rect
-                    x={pos.x + 12}
+                    x={pos.x + 10}
                     y={pos.y - 12}
                     width={storm.id.length * 6.5 + 8}
                     height="16"
-                    rx="3"
-                    fill={isSelected ? '#0f172a' : '#ffffff'}
-                    stroke={isSelected ? '#0284c7' : '#cbd5e1'}
+                    rx="4"
+                    fill={isSelected ? '#28191D' : '#FFFFFF'}
+                    stroke={isSelected ? '#A51F52' : '#EBDCD8'}
                     strokeWidth="1"
-                    className="filter drop-shadow-xs"
                   />
                   <text
-                    x={pos.x + 16}
+                    x={pos.x + 14}
                     y={pos.y}
                     fontSize="9.5"
                     fontWeight="700"
-                    fill={isSelected ? '#ffffff' : '#0f172a'}
+                    fill={isSelected ? '#FFFFFF' : '#28191D'}
                     fontFamily="monospace"
                   >
                     {storm.id}
@@ -519,12 +467,12 @@ export default function WeatherMap({
         </svg>
 
         {/* Floating Mini Compass & Scale in bottom-left */}
-        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs border border-slate-200 rounded-lg p-2.5 shadow-sm text-[10px] space-y-1">
-          <div className="flex items-center space-x-1.5 font-bold text-slate-700">
-            <Navigation className="w-3.5 h-3.5 text-sky-600 rotate-45" />
+        <div className="absolute bottom-3 left-3 bg-[#FFFFFF]/90 backdrop-blur-xs border border-[#EBDCD8] rounded-xl p-2.5 shadow-sm text-[10px] space-y-1">
+          <div className="flex items-center space-x-1.5 font-bold text-[#28191D]">
+            <Navigation className="w-3.5 h-3.5 text-[#A51F52] rotate-45" />
             <span>N-Up Azimuthal Projection</span>
           </div>
-          <div className="flex items-center space-x-2 text-slate-500 font-mono">
+          <div className="flex items-center space-x-2 text-[#735E60] font-mono">
             <span>DWR Range: 250 km</span>
             <span>•</span>
             <span>Zoom: {(zoom * 100).toFixed(0)}%</span>
@@ -532,86 +480,70 @@ export default function WeatherMap({
         </div>
 
         {/* Legend in bottom-right */}
-        <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-lg p-2.5 shadow-sm text-[11px] space-y-1.5 hidden sm:block">
-          <div className="font-bold text-slate-700 text-[10px] uppercase tracking-wider border-b border-slate-100 pb-1">
+        <div className="absolute bottom-3 right-3 bg-[#FFFFFF]/95 backdrop-blur-xs border border-[#EBDCD8] rounded-xl p-3 shadow-sm text-[11px] space-y-1.5 hidden sm:block">
+          <div className="font-bold text-[#28191D] text-[10px] uppercase tracking-wider border-b border-[#F4E3E6] pb-1">
             Reflectivity Scale (dBZ)
           </div>
           <div className="flex items-center space-x-3 text-[10px] font-mono">
             <div className="flex items-center space-x-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-600"></span>
-              <span>≥ 50 (Hail/Severe)</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#A51F52]"></span>
+              <span>≥ 50 (Severe Core)</span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              <span>40-49 (Moderate)</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
+              <span>40-49 (Convective)</span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-600"></span>
-              <span>&lt; 40 (Light)</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#28191D]"></span>
+              <span>&lt; 40 (Stratiform)</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Selected Storm Detail Drawer / Information Bar */}
-      {selectedStorm ? (
-        <div className="p-4 bg-sky-50/60 border-t border-sky-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Selected Storm Detail Drawer */}
+      {selectedStorm && (
+        <div className="p-5 bg-[#F4E3E6]/40 border-t border-[#F4E3E6] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-mono font-bold bg-slate-900 text-white px-2 py-0.5 rounded">
+              <span className="text-xs font-mono font-bold bg-[#28191D] text-[#FFF3F0] px-2.5 py-0.5 rounded-full">
                 {selectedStorm.id}
               </span>
-              <h4 className="text-sm font-bold text-slate-900">{selectedStorm.name}</h4>
-              <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                  selectedStorm.estimated_risk === 'HIGH'
-                    ? 'bg-red-100 text-red-800 border border-red-300'
-                    : selectedStorm.estimated_risk === 'MODERATE'
-                    ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                    : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                }`}
-              >
-                {selectedStorm.estimated_risk} RISK
+              <h4 className="text-sm font-bold text-[#28191D] font-headline">{selectedStorm.name}</h4>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#A51F52] text-white uppercase">
+                {selectedStorm.estimated_risk}
               </span>
-              <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-mono">
+              <span className="text-[10px] bg-[#D3E4B7] text-[#28191D] px-2 py-0.5 rounded-full font-mono font-semibold">
                 {selectedStorm.status}
               </span>
             </div>
-            <p className="text-xs text-slate-600">{selectedStorm.description}</p>
+            <p className="text-xs text-[#735E60]">{selectedStorm.description}</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-white border border-sky-200 rounded-lg p-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-[#FFFFFF] border border-[#EBDCD8] rounded-2xl p-3.5">
             <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">LOCATION</span>
-              <span className="font-mono font-semibold text-slate-800">
+              <span className="text-[10px] text-[#735E60] block font-semibold uppercase">COORDINATES</span>
+              <span className="font-mono font-semibold text-[#28191D]">
                 {selectedStorm.lat.toFixed(2)}°N, {selectedStorm.lon.toFixed(2)}°E
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">INTENSITY</span>
-              <span className="font-mono font-bold text-red-600">{selectedStorm.intensity_dbz} dBZ</span>
+              <span className="text-[10px] text-[#735E60] block font-semibold uppercase">MAX REFLECTIVITY</span>
+              <span className="font-mono font-bold text-[#A51F52]">{selectedStorm.intensity_dbz} dBZ</span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">MOVEMENT</span>
-              <span className="font-mono text-slate-800">
+              <span className="text-[10px] text-[#735E60] block font-semibold uppercase">PROPAGATION</span>
+              <span className="font-mono text-[#28191D]">
                 {selectedStorm.movement_direction} @ {selectedStorm.movement_speed_kmh} km/h
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">LIGHTNING PROB</span>
-              <span className="font-mono font-bold text-amber-600">
+              <span className="text-[10px] text-[#735E60] block font-semibold uppercase">LIGHTNING RISK</span>
+              <span className="font-mono font-bold text-[#A51F52]">
                 {(selectedStorm.lightning_probability * 100).toFixed(0)}%
               </span>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="p-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Info className="w-4 h-4 text-sky-600" />
-            <span>Click any storm cell node on the map to inspect full radar & nowcast telemetry.</span>
-          </div>
-          <span className="text-[11px] font-mono text-slate-400">Total Monitored: {storms.length} Cells</span>
         </div>
       )}
     </div>

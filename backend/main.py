@@ -15,12 +15,19 @@ from backend.routes.dashboard import router as dashboard_router
 from backend.routes.storms import router as storms_router
 from backend.routes.risk import router as risk_router
 from backend.routes.architecture import router as architecture_router
+from backend.routes.weather import router as weather_router
+from backend.routes.detection import router as detection_router
+from backend.routes.tracking import router as tracking_router
+from backend.routes.lightning import router as lightning_router
+from backend.routes.optimization import router as optimization_router
+from backend.routes.scenarios import router as scenarios_router
+from backend.routes.reports import router as reports_router
 from backend.data.demo_data import get_current_iso, DEMO_DISCLAIMER
 
 app = FastAPI(
-    title="ATLAS-Q Meteorological AI Engine",
-    description="Atmospheric Thunderstorm & Lightning Analysis System with Quantum-Inspired Optimization (SIH 2026 PS 26072 - Phase 1 Prototype)",
-    version="1.0.0-phase1"
+    title="ATLAS-Q Meteorological Intelligence & Nowcasting Platform",
+    description="Atmospheric Thunderstorm & Lightning Analysis System with Quantum-Inspired Optimization (SIH 2026 PS 26072)",
+    version="2.0.0-editorial"
 )
 
 # CORS configuration
@@ -37,6 +44,13 @@ app.include_router(dashboard_router)
 app.include_router(storms_router)
 app.include_router(risk_router)
 app.include_router(architecture_router)
+app.include_router(weather_router)
+app.include_router(detection_router)
+app.include_router(tracking_router)
+app.include_router(lightning_router)
+app.include_router(optimization_router)
+app.include_router(scenarios_router)
+app.include_router(reports_router)
 
 @app.get("/api/health", tags=["Health"])
 def health_check():
@@ -44,15 +58,23 @@ def health_check():
     return {
         "status": "ok",
         "service": "ATLAS-Q",
-        "phase": "Phase 1 Prototype",
-        "version": "1.0.0",
+        "version": "2.0.0-editorial",
         "timestamp": get_current_iso(),
         "problem_statement": "SIH 2026 PS 26072",
-        "disclaimer": DEMO_DISCLAIMER
+        "disclaimer": DEMO_DISCLAIMER,
+        "capabilities": [
+            "live_weather_ingestion",
+            "storm_detection_engine",
+            "kinematic_tracking_nowcasting",
+            "lightning_density_intelligence",
+            "multi_factor_risk_alerts",
+            "quantum_inspired_optimization_benchmarks",
+            "reproducible_scenario_playback",
+            "automated_report_generation"
+        ]
     }
 
 # Check for built frontend dist directory
-# Look in several common locations (relative to main.py or root)
 possible_dist_paths = [
     BASE_DIR / "frontend" / "dist",
     BASE_DIR / "dist",
@@ -88,7 +110,7 @@ else:
     def root():
         return {
             "service": "ATLAS-Q Backend API",
-            "phase": "Phase 1 Prototype",
+            "version": "2.0.0-editorial",
             "message": "FastAPI is operational. Frontend dist has not been built or mounted yet.",
             "health": "/api/health",
             "endpoints": [
@@ -96,7 +118,18 @@ else:
                 "/api/dashboard",
                 "/api/storms",
                 "/api/risk",
-                "/api/architecture"
+                "/api/risk/alerts",
+                "/api/architecture",
+                "/api/weather/stations",
+                "/api/detection/grid",
+                "/api/detection/run",
+                "/api/tracking/live",
+                "/api/lightning/analysis",
+                "/api/optimization/benchmark",
+                "/api/scenarios/catalog",
+                "/api/scenarios/kalbaishakhi",
+                "/api/reports/csv",
+                "/api/reports/html"
             ]
         }
 

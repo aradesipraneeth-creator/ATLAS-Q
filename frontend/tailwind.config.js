@@ -7,22 +7,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        meteor: {
-          navy: '#0b192c',
-          deepBlue: '#1e3e62',
-          accentCyan: '#00adb5',
-          lightBg: '#f8fafc',
-          cardBg: '#ffffff',
-          borderSubtle: '#e2e8f0',
-          slateText: '#334155',
-          amberWarning: '#f59e0b',
-          redSevere: '#dc2626',
-          greenSafe: '#16a34a'
+        editorial: {
+          bg: '#FFF3F0',
+          text: '#28191D',
+          muted: '#735E60',
+          sage: '#D3E4B7',
+          berry: '#A51F52',
+          pink: '#F4E3E6',
+          white: '#FFFFFF',
+          card: '#FFFFFF',
+          subtle: '#EBDCD8'
+        },
+        operational: {
+          normal: '#22c55e',
+          warning: '#f59e0b',
+          critical: '#A51F52',
+          info: '#0284c7'
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+        headline: ['"Space Grotesk"', '"Manrope"', 'system-ui', 'sans-serif'],
+        serif: ['"DM Serif Display"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace']
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+        'pill': '9999px'
       }
     },
   },

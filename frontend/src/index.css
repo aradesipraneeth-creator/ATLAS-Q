@@ -4,59 +4,51 @@
 
 @layer base {
   body {
-    background-color: #f8fafc;
-    color: #0f172a;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #FFF3F0;
+    color: #28191D;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.03em;
   }
 }
 
-/* Radar pulse animation */
-@keyframes radar-pulse {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(0.85);
-    opacity: 0.9;
-  }
+/* Subtle pulse animation for radar & storm markers */
+@keyframes atmospheric-pulse {
+  0% { transform: scale(0.92); opacity: 0.8; }
+  50% { transform: scale(1.08); opacity: 0.3; }
+  100% { transform: scale(0.92); opacity: 0.8; }
 }
 
-.animate-radar-pulse {
-  animation: radar-pulse 3s infinite ease-in-out;
+.animate-atmospheric-pulse {
+  animation: atmospheric-pulse 3.5s infinite ease-in-out;
 }
 
-/* Subtle sweep line */
+/* Radar sweep */
 @keyframes radar-sweep {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .animate-radar-sweep {
   transform-origin: center;
-  animation: radar-sweep 6s linear infinite;
+  animation: radar-sweep 8s linear infinite;
 }
 
-/* Custom scrollbar for data tables */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #FFF3F0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: #D3E4B7;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #A51F52;
 }

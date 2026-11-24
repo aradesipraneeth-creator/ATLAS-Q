@@ -5,6 +5,7 @@ from backend.data.demo_data import (
     STORM_CELLS,
     get_current_iso
 )
+from backend.services.risk_service import generate_system_alerts, compute_multi_factor_risk
 
 router = APIRouter(prefix="/api/risk", tags=["Risk Analysis"])
 
@@ -28,5 +29,15 @@ def get_risk_analysis():
             }
             for s in STORM_CELLS
         ],
+        "active_alerts": generate_system_alerts(STORM_CELLS),
         "operational_advice": "Severe weather protocol active in Eastern Sector. Issue Doppler alerts to state disaster management authorities."
+    }
+
+@router.get("/alerts")
+def get_alerts():
+    """Returns generated explainable warning alerts based on multi-factor risk computation."""
+    return {
+        "status": "ok",
+        "alerts": generate_system_alerts(STORM_CELLS),
+        "timestamp": get_current_iso()
     }

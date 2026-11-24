@@ -4,6 +4,7 @@ Consecutive Observation Centroid Matching, Kinematic Displacement Estimation,
 and 0–60 Minute Extrapolation with Calibrated Uncertainty Cones.
 """
 
+from __future__ import annotations
 import math
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
@@ -17,19 +18,6 @@ def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) ->
          math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2.0) ** 2)
     c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
     return R * c
-
-def calculate_heading_and_speed(
-    lat_prev: float, lon_prev: float,
-    lat_curr: float, lon_curr: float,
-    delta_minutes: float = 10.0
-) -> Tuple_Heading_Speed:
-    pass
-
-class Tuple_Heading_Speed:
-    def __init__(self, speed_kmh: float, heading_deg: float, compass: str):
-        self.speed_kmh = speed_kmh
-        self.heading_deg = heading_deg
-        self.compass = compass
 
 def compute_kinematics(
     lat_prev: float, lon_prev: float,

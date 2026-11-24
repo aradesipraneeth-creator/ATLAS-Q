@@ -39,9 +39,9 @@ def list_evacuation_zones():
 
 @router.post("/optimize-response")
 def run_optimization(
-    problem_type: str = Query(default="shelter_dispatch", description="Type of disaster optimization problem"),
-    num_zones: int = Query(default=12, ge=4, le=30),
-    num_facilities: int = Query(default=4, ge=2, le=10)
+    problem_type: str = "shelter_dispatch",
+    num_zones: int = 12,
+    num_facilities: int = 4
 ):
     """Executes Quantum-Inspired Simulated Annealing on emergency allocation problem and benchmarks baselines."""
     solution = solve_disaster_resource_allocation(

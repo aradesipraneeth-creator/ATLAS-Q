@@ -157,14 +157,25 @@ def solve_disaster_resource_allocation(
     Solves emergency logistics / shelter distribution problem using Quantum-Inspired Simulated Annealing (QSA)
     and benchmarks it against Classical Simulated Annealing, Greedy heuristic, and Random allocation.
     """
+    # Safe type cast in case called with Query or string params
+    try:
+        num_facilities_int = int(num_facilities)
+    except Exception:
+        num_facilities_int = 4
+
+    try:
+        num_zones_int = int(num_zones)
+    except Exception:
+        num_zones_int = 12
+
     # Use real classical QSA optimizer
-    benchmark_results = run_optimization_benchmarks(iterations=60, seed=42)
+    benchmark_results = run_optimization_benchmarks(iterations=40, seed=42)
     algos = benchmark_results["algorithms"]
     qsa = algos["quantum_inspired_sa"]
     csa = algos["simulated_annealing"]
 
     # Generate facility coordinate assignments from SHELTER_DATABASE
-    facility_coords = [[s["lat"], s["lon"]] for s in SHELTER_DATABASE[:num_facilities]]
+    facility_coords = [[s["lat"], s["lon"]] for s in SHELTER_DATABASE[:num_facilities_int]]
 
     return {
         "problem_type": problem_type,

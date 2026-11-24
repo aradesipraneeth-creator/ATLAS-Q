@@ -95,3 +95,35 @@ export function getReportCsvUrl(scenario = "kalbaishakhi") {
 export function getReportHtmlUrl(scenario = "kalbaishakhi") {
   return `${API_BASE}/reports/html?scenario=${encodeURIComponent(scenario)}`;
 }
+
+export async function fetchActiveCyclones() {
+  const res = await fetch(`${API_BASE}/cyclones/active`);
+  return handleResponse(res);
+}
+
+export async function fetchCycloneDetail(cycloneId) {
+  const res = await fetch(`${API_BASE}/cyclones/${encodeURIComponent(cycloneId)}`);
+  return handleResponse(res);
+}
+
+export async function fetchDisasterImpact() {
+  const res = await fetch(`${API_BASE}/disaster/impact`);
+  return handleResponse(res);
+}
+
+export async function fetchDisasterShelters() {
+  const res = await fetch(`${API_BASE}/disaster/shelters`);
+  return handleResponse(res);
+}
+
+export async function fetchEvacuationZones() {
+  const res = await fetch(`${API_BASE}/disaster/evacuation-zones`);
+  return handleResponse(res);
+}
+
+export async function runDisasterOptimization(problemType = "shelter_dispatch", numZones = 12, numFacilities = 4) {
+  const res = await fetch(`${API_BASE}/disaster/optimize-response?problem_type=${encodeURIComponent(problemType)}&num_zones=${numZones}&num_facilities=${numFacilities}`, {
+    method: 'POST'
+  });
+  return handleResponse(res);
+}

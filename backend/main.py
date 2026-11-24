@@ -22,6 +22,8 @@ from backend.routes.lightning import router as lightning_router
 from backend.routes.optimization import router as optimization_router
 from backend.routes.scenarios import router as scenarios_router
 from backend.routes.reports import router as reports_router
+from backend.routes.cyclones import router as cyclones_router
+from backend.routes.disaster import router as disaster_router
 from backend.data.demo_data import get_current_iso, DEMO_DISCLAIMER
 
 app = FastAPI(
@@ -51,6 +53,8 @@ app.include_router(lightning_router)
 app.include_router(optimization_router)
 app.include_router(scenarios_router)
 app.include_router(reports_router)
+app.include_router(cyclones_router)
+app.include_router(disaster_router)
 
 @app.get("/api/health", tags=["Health"])
 def health_check():

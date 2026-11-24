@@ -1,5 +1,16 @@
 import React from 'react';
-import { Zap, Bell, Activity, Radio, Compass, ShieldAlert, Cpu, Database, FileText, Settings, Play } from 'lucide-react';
+import { 
+  Activity, 
+  Radio, 
+  ShieldAlert, 
+  FileText, 
+  Play, 
+  Bell, 
+  ExternalLink,
+  Download,
+  Info
+} from 'lucide-react';
+import { getReportCsvUrl, getReportHtmlUrl } from '../services/api';
 
 export default function Header({
   activeTab,
@@ -11,15 +22,10 @@ export default function Header({
   onLaunchDemo
 }) {
   const navItems = [
-    { id: 'overview', label: 'overview', icon: Activity },
-    { id: 'live-radar', label: 'live radar', icon: Radio },
-    { id: 'storm-tracking', label: 'storm tracking', icon: Compass },
-    { id: 'lightning', label: 'lightning', icon: Zap },
-    { id: 'risk-intelligence', label: 'risk intelligence', icon: ShieldAlert },
-    { id: 'ai-optimization', label: 'ai & optimization', icon: Cpu },
-    { id: 'data-sources', label: 'data sources', icon: Database },
-    { id: 'reports', label: 'reports', icon: FileText },
-    { id: 'settings', label: 'settings', icon: Settings },
+    { id: 'command-center', label: '01 — command center', icon: Activity },
+    { id: 'forecast-intelligence', label: '02 — forecast intelligence', icon: Radio },
+    { id: 'disaster-management', label: '03 — disaster management', icon: ShieldAlert },
+    { id: 'about', label: '04 — about atlas-q', icon: Info },
   ];
 
   return (
@@ -31,7 +37,7 @@ export default function Header({
             SIH 2026 • PS 26072
           </span>
           <span className="hidden md:inline text-[#735E60]">
-            Autonomous Multimodal Thunderstorm & Lightning Nowcasting Platform
+            Autonomous Multimodal Thunderstorm, Cyclone & Lightning Disaster Intelligence Platform
           </span>
         </div>
         <div className="flex items-center space-x-4">
@@ -53,7 +59,7 @@ export default function Header({
                 : 'bg-[#F4E3E6] text-[#A51F52]'
             }`}
           >
-            {demoMode ? 'SIMULATION MODE' : 'LIVE DATA MODE'}
+            {demoMode ? 'SIMULATION MODE' : 'LIVE OBSERVATION'}
           </button>
         </div>
       </div>
@@ -64,21 +70,21 @@ export default function Header({
           {/* Logo & Brand (Bakery-inspired editorial lowercase typography) */}
           <div className="flex items-center justify-between">
             <div
-              onClick={() => setActiveTab('overview')}
+              onClick={() => setActiveTab('command-center')}
               className="cursor-pointer group flex items-baseline space-x-2"
             >
               <span className="text-2xl sm:text-3xl font-extrabold tracking-tighter text-[#28191D] font-headline lowercase">
                 atlas-q.
               </span>
               <span className="text-[11px] font-serif italic text-[#735E60]">
-                meteorological intelligence
+                disaster intelligence
               </span>
             </div>
 
-            {/* Mobile Notification & Simulation Action */}
+            {/* Mobile Alert Indicator */}
             <div className="flex items-center space-x-2 lg:hidden">
               <button
-                onClick={() => setActiveTab('risk-intelligence')}
+                onClick={() => setActiveTab('command-center')}
                 className="relative p-2 rounded-full bg-[#F4E3E6] text-[#A51F52]"
               >
                 <Bell className="w-4 h-4" />
@@ -91,15 +97,15 @@ export default function Header({
             </div>
           </div>
 
-          {/* 9 Navigation Links (Clean, unbordered, editorial styling) */}
-          <nav className="flex items-center space-x-1 sm:space-x-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+          {/* 4 Consolidated Navigation Tabs */}
+          <nav className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium tracking-tight whitespace-nowrap transition-all ${
+                  className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold tracking-tight whitespace-nowrap transition-all ${
                     isActive
                       ? 'bg-[#28191D] text-[#FFF3F0] shadow-xs'
                       : 'text-[#735E60] hover:text-[#28191D] hover:bg-[#F4E3E6]/60'
@@ -111,23 +117,35 @@ export default function Header({
             })}
           </nav>
 
-          {/* Right Action: Notification Center & Quick Scenario Play */}
-          <div className="hidden lg:flex items-center space-x-3">
-            <button
-              onClick={() => setActiveTab('risk-intelligence')}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#F4E3E6] hover:bg-[#ebd0d6] text-[#A51F52] text-xs font-semibold transition"
-              title="View Warning Advisories"
+          {/* Quick Action Utilities: CSV, Printable Report & Scenario Launcher */}
+          <div className="hidden lg:flex items-center space-x-2.5">
+            <a
+              href={getReportCsvUrl()}
+              download
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white border border-[#EBDCD8] hover:bg-[#FFF3F0] text-[#735E60] hover:text-[#28191D] text-xs font-mono transition"
+              title="Download RFC-4180 CSV Dataset"
             >
-              <Bell className="w-3.5 h-3.5" />
-              <span>{alertsCount} Alerts</span>
-            </button>
+              <Download className="w-3.5 h-3.5 text-[#A51F52]" />
+              <span>CSV</span>
+            </a>
+
+            <a
+              href={getReportHtmlUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white border border-[#EBDCD8] hover:bg-[#FFF3F0] text-[#735E60] hover:text-[#28191D] text-xs font-mono transition"
+              title="Printable Meteorological Report"
+            >
+              <FileText className="w-3.5 h-3.5 text-[#A51F52]" />
+              <span>Report</span>
+            </a>
 
             <button
               onClick={onLaunchDemo}
-              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#D3E4B7] hover:bg-[#c2d7a2] text-[#28191D] text-xs font-bold transition shadow-xs"
+              className="flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-[#D3E4B7] hover:bg-[#c2d7a2] text-[#28191D] text-xs font-bold transition shadow-xs"
             >
               <Play className="w-3 h-3 fill-[#28191D]" />
-              <span>Launch Scenario</span>
+              <span>Scenarios</span>
             </button>
           </div>
         </div>

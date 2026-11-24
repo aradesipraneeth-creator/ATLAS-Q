@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import OverviewPage from './pages/OverviewPage';
-import LiveRadarPage from './pages/LiveRadarPage';
-import StormTrackingPage from './pages/StormTrackingPage';
-import LightningPage from './pages/LightningPage';
-import RiskIntelligencePage from './pages/RiskIntelligencePage';
-import OptimizationPage from './pages/OptimizationPage';
-import DataSourcesPage from './pages/DataSourcesPage';
-import ReportsPage from './pages/ReportsPage';
-import SettingsPage from './pages/SettingsPage';
+import CommandCenterPage from './pages/CommandCenterPage';
+import ForecastIntelligencePage from './pages/ForecastIntelligencePage';
+import DisasterManagementPage from './pages/DisasterManagementPage';
+import AboutPage from './pages/AboutPage';
 import StormDetailModal from './components/StormDetailModal';
 import ScenarioModal from './components/ScenarioModal';
 import { fetchHealth, fetchDashboard, fetchStorms, fetchRiskAnalysis } from './services/api';
-import { Loader2, AlertCircle, RefreshCw, Zap, ArrowUpRight } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('command-center');
   const [systemOnline, setSystemOnline] = useState(false);
   const [demoMode, setDemoMode] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -69,7 +64,7 @@ export default function App() {
     loadAllData();
   }, []);
 
-  const alertsCount = riskData?.active_alerts?.length || 2;
+  const alertsCount = riskData?.active_alerts?.length || 3;
 
   return (
     <div className="min-h-screen bg-[#FFF3F0] text-[#28191D] font-sans flex flex-col justify-between selection:bg-[#A51F52] selection:text-white">
@@ -91,7 +86,7 @@ export default function App() {
             <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-3">
               <Loader2 className="w-8 h-8 text-[#A51F52] animate-spin" />
               <p className="text-sm font-headline font-bold text-[#28191D] lowercase">
-                initializing atlas-q meteorological intelligence...
+                initializing atlas-q disaster intelligence platform...
               </p>
             </div>
           ) : error && !dashboardData ? (
@@ -111,54 +106,34 @@ export default function App() {
             </div>
           ) : (
             <div>
-              {activeTab === 'overview' && (
-                <OverviewPage
+              {/* PAGE 01: COMMAND CENTER */}
+              {(activeTab === 'command-center' || activeTab === 'overview') && (
+                <CommandCenterPage
                   dashboardData={dashboardData}
                   stormsData={stormsData}
                   riskData={riskData}
                   selectedStorm={selectedStorm}
                   setSelectedStorm={setSelectedStorm}
                   onOpenStormModal={(storm) => setModalStorm(storm)}
-                  onExploreLive={() => setActiveTab('live-radar')}
+                  onNavigateToForecast={() => setActiveTab('forecast-intelligence')}
+                  onNavigateToDisaster={() => setActiveTab('disaster-management')}
                   onLaunchSimulation={() => setIsScenarioOpen(true)}
                 />
               )}
 
-              {activeTab === 'live-radar' && (
-                <LiveRadarPage
-                  onSelectStorm={(storm) => setSelectedStorm(storm)}
-                  onOpenModal={(storm) => setModalStorm(storm)}
-                />
+              {/* PAGE 02: FORECAST INTELLIGENCE */}
+              {(activeTab === 'forecast-intelligence' || activeTab === 'live-radar' || activeTab === 'storm-tracking' || activeTab === 'lightning') && (
+                <ForecastIntelligencePage />
               )}
 
-              {activeTab === 'storm-tracking' && (
-                <StormTrackingPage
-                  stormsData={stormsData}
-                />
+              {/* PAGE 03: DISASTER MANAGEMENT */}
+              {(activeTab === 'disaster-management' || activeTab === 'risk-intelligence' || activeTab === 'ai-optimization') && (
+                <DisasterManagementPage />
               )}
 
-              {activeTab === 'lightning' && (
-                <LightningPage />
-              )}
-
-              {activeTab === 'risk-intelligence' && (
-                <RiskIntelligencePage />
-              )}
-
-              {activeTab === 'ai-optimization' && (
-                <OptimizationPage />
-              )}
-
-              {activeTab === 'data-sources' && (
-                <DataSourcesPage />
-              )}
-
-              {activeTab === 'reports' && (
-                <ReportsPage />
-              )}
-
-              {activeTab === 'settings' && (
-                <SettingsPage />
+              {/* PAGE 04: ABOUT ATLAS-Q */}
+              {(activeTab === 'about' || activeTab === 'data-sources' || activeTab === 'reports' || activeTab === 'settings') && (
+                <AboutPage />
               )}
             </div>
           )}
@@ -178,12 +153,12 @@ export default function App() {
           onClose={() => setModalStorm(null)}
           onSelectForTracking={(storm) => {
             setSelectedStorm(storm);
-            setActiveTab('storm-tracking');
+            setActiveTab('forecast-intelligence');
           }}
         />
       )}
 
-      {/* Editorial Berry Footer (Inspired by reference bakery website 'come and visit' block) */}
+      {/* Editorial Berry Footer */}
       <footer className="mt-16 bg-[#A51F52] text-white rounded-t-[2.5rem] sm:rounded-t-[3.5rem] pt-12 pb-8 px-6 sm:px-12 shadow-md">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/20">
@@ -193,71 +168,75 @@ export default function App() {
                 SIH 2026 • PS 26072
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tighter font-headline lowercase">
-                understand storms.<br />
-                before they strike.
+                atmospheric intelligence.<br />
+                disaster preparedness.<br />
+                smarter decisions.
               </h2>
               <p className="text-xs text-[#F4E3E6] leading-relaxed max-w-sm">
-                Autonomous AI-powered thunderstorm intelligence and multimodal nowcasting platform engineered for national disaster preparedness and aviation safety.
+                AI-powered platform for severe thunderstorm nowcasting, tropical cyclone track forecasting, multi-hazard risk assessment, and quantum-inspired disaster response optimization.
               </p>
             </div>
 
-            {/* Middle: Navigation shortcuts */}
+            {/* Middle: 4 Primary Destinations Navigation */}
             <div className="md:col-span-4 grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block mb-2">
-                  Intelligence
+                  Operations
                 </span>
-                <ul className="space-y-1.5 text-[#FFF3F0]">
-                  <li><button onClick={() => setActiveTab('overview')} className="hover:underline">Overview</button></li>
-                  <li><button onClick={() => setActiveTab('live-radar')} className="hover:underline">Live Radar (DWR)</button></li>
-                  <li><button onClick={() => setActiveTab('storm-tracking')} className="hover:underline">Storm Tracking</button></li>
-                  <li><button onClick={() => setActiveTab('lightning')} className="hover:underline">Lightning Density</button></li>
+                <ul className="space-y-2 text-[#FFF3F0]">
+                  <li>
+                    <button onClick={() => setActiveTab('command-center')} className="hover:underline">
+                      01 — Command Center
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={() => setActiveTab('forecast-intelligence')} className="hover:underline">
+                      02 — Forecast Intelligence
+                    </button>
+                  </li>
                 </ul>
               </div>
 
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block mb-2">
-                  Analytics
+                  Decision Support
                 </span>
-                <ul className="space-y-1.5 text-[#FFF3F0]">
-                  <li><button onClick={() => setActiveTab('risk-intelligence')} className="hover:underline">Risk Intelligence</button></li>
-                  <li><button onClick={() => setActiveTab('ai-optimization')} className="hover:underline">QIO Optimization</button></li>
-                  <li><button onClick={() => setActiveTab('data-sources')} className="hover:underline">Data Provenance</button></li>
-                  <li><button onClick={() => setActiveTab('reports')} className="hover:underline">Incident Reports</button></li>
+                <ul className="space-y-2 text-[#FFF3F0]">
+                  <li>
+                    <button onClick={() => setActiveTab('disaster-management')} className="hover:underline">
+                      03 — Disaster Management
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={() => setActiveTab('about')} className="hover:underline">
+                      04 — About ATLAS-Q
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
 
-            {/* Right: Technical specifications */}
-            <div className="md:col-span-3 text-xs space-y-2 text-[#F4E3E6]">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider block mb-1">
-                Architecture Spec
+            {/* Right: Operational Status */}
+            <div className="md:col-span-3 space-y-3 text-xs">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block">
+                Operational Framework
               </span>
-              <p className="text-[11px] leading-relaxed">
-                FastAPI Python Backend + React 18 SPA + Render Single-Service Deployment.
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => setIsScenarioOpen(true)}
-                  className="px-4 py-2 rounded-full bg-[#D3E4B7] text-[#28191D] font-bold text-xs inline-flex items-center space-x-1.5 hover:bg-[#c2d7a2] transition shadow-xs"
-                >
-                  <Zap className="w-3.5 h-3.5 fill-[#28191D]" />
-                  <span>Launch Simulation</span>
-                </button>
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/10 space-y-1">
+                <span className="text-white font-bold block">National Cyclone Protocol</span>
+                <span className="text-white/80 block text-[11px]">IMD RSMC New Delhi Standard Guidelines & NDMA Disaster Matrix</span>
               </div>
+              <p className="text-[10px] text-white/70">
+                Data sources: INSAT-3D/3DR, DWR S-Band Radars, Ground Lightning Network, Open-Meteo.
+              </p>
             </div>
           </div>
 
-          {/* Micro Footer */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#F4E3E6] gap-2">
-            <div>
-              &copy; {new Date().getFullYear()} ATLAS-Q • Atmospheric Thunderstorm & Lightning Analysis System
-            </div>
-            <div className="flex items-center space-x-3 font-mono">
-              <span>Status: NOMINAL</span>
-              <span>•</span>
-              <span>Render Ready</span>
-            </div>
+          {/* Bottom Copyright & Disclaimer */}
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#F4E3E6] gap-3">
+            <span>© 2026 ATLAS-Q Meteorological & Disaster Intelligence Platform. All rights reserved.</span>
+            <span className="text-center sm:text-right font-mono">
+              STATUS: READY FOR SIH 2026 EVALUATION
+            </span>
           </div>
         </div>
       </footer>

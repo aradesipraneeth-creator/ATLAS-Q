@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import Header from './components/Header';
 import CommandCenterPage from './pages/CommandCenterPage';
 import ForecastIntelligencePage from './pages/ForecastIntelligencePage';
@@ -9,8 +9,16 @@ import ScenarioModal from './components/ScenarioModal';
 import { fetchHealth, fetchDashboard, fetchStorms, fetchRiskAnalysis } from './services/api';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
+const CinematicIntro3D = lazy(() => import('./components/CinematicIntro3D'));
+
 export default function App() {
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('atlasq_intro_seen'));
   const [activeTab, setActiveTab] = useState('command-center');
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem('atlasq_intro_seen', 'true');
+    setShowIntro(false);
+  };
   const [regionMode, setRegionMode] = useState('india'); // 'india' or 'andhra_pradesh'
   const [systemOnline, setSystemOnline] = useState(false);
   const [demoMode, setDemoMode] = useState(true);
@@ -69,6 +77,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FFF3F0] text-[#28191D] font-sans flex flex-col justify-between selection:bg-[#A51F52] selection:text-white">
+      {showIntro && (
+        <Suspense fallback={null}>
+          <CinematicIntro3D onComplete={handleIntroComplete} />
+        </Suspense>
+      )}
       <div>
         {/* Global Editorial Header */}
         <Header
@@ -81,6 +94,7 @@ export default function App() {
           regionMode={regionMode}
           setRegionMode={setRegionMode}
           onLaunchDemo={() => setIsScenarioOpen(true)}
+          onReplayIntro={() => setShowIntro(true)}
         />
 
         {/* Main Application Container */}

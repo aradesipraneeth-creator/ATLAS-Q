@@ -7,7 +7,8 @@ import {
   Play, 
   Bell, 
   FileText, 
-  Download
+  Download,
+  Sparkles
 } from 'lucide-react';
 import { getReportCsvUrl, getReportHtmlUrl } from '../services/api';
 
@@ -20,7 +21,8 @@ export default function Header({
   setDemoMode,
   regionMode = 'india',
   setRegionMode,
-  onLaunchDemo
+  onLaunchDemo,
+  onReplayIntro
 }) {
   const navItems = [
     { id: 'command-center', label: '01. earth intelligence', icon: Globe2 },
@@ -157,6 +159,17 @@ export default function Header({
               <FileText className="w-3.5 h-3.5 text-[#A51F52]" />
               <span>Report</span>
             </a>
+
+            {onReplayIntro && (
+              <button
+                onClick={onReplayIntro}
+                className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-[#28191D] hover:bg-[#3d272c] text-white text-xs font-bold transition shadow-xs"
+                title="Replay 3D Cinematic Intro"
+              >
+                <Sparkles className="w-3 h-3 text-amber-300" />
+                <span>Intro</span>
+              </button>
+            )}
 
             <button
               onClick={onLaunchDemo}

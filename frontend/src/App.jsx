@@ -11,12 +11,45 @@ import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 const CinematicIntro3D = lazy(() => import('./components/CinematicIntro3D'));
 
+function resolveInitialTab() {
+  const p = (window.location.pathname + window.location.hash).toLowerCase();
+  if (p.includes('forecast') || p.includes('predictive')) return 'forecast-intelligence';
+  if (p.includes('disaster') || p.includes('simulation')) return 'disaster-management';
+  if (p.includes('about') || p.includes('research')) return 'about';
+  return 'command-center';
+}
+
+function IntroBootScreen() {
+  return (
+    <div className="fixed inset-0 z-[100] bg-[#030712] text-white flex flex-col items-center justify-center space-y-3">
+      <div className="w-8 h-8 rounded-full border-2 border-sky-400/30 border-t-sky-400 animate-spin" />
+      <div className="text-xl font-extrabold tracking-tight font-headline">ATLAS-Q</div>
+      <div className="text-[11px] font-mono tracking-widest uppercase text-sky-300/80">
+        Initializing 3D Atmospheric Intelligence...
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
-  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('atlasq_intro_seen'));
-  const [activeTab, setActiveTab] = useState('command-center');
+  // Always launch 3D intro automatically on every full page load / browser refresh
+  const [showIntro, setShowIntro] = useState(true);
+  const [activeTab, setActiveTabState] = useState(resolveInitialTab);
+
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    const routeMap = {
+      'command-center': '/',
+      'forecast-intelligence': '/forecast-intelligence',
+      'disaster-management': '/disaster-management',
+      'about': '/about'
+    };
+    if (routeMap[tab] && window.location.pathname !== routeMap[tab]) {
+      window.history.replaceState(null, '', routeMap[tab]);
+    }
+  };
 
   const handleIntroComplete = () => {
-    sessionStorage.setItem('atlasq_intro_seen', 'true');
     setShowIntro(false);
   };
   const [regionMode, setRegionMode] = useState('india'); // 'india' or 'andhra_pradesh'
@@ -77,11 +110,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FFF3F0] text-[#28191D] font-sans flex flex-col justify-between selection:bg-[#A51F52] selection:text-white">
-      {showIntro && (
-        <Suspense fallback={null}>
+      {showIntro ? (
+        <Suspense fallback={<IntroBootScreen />}>
           <CinematicIntro3D onComplete={handleIntroComplete} />
         </Suspense>
-      )}
+      ) : (
+      <>
       <div>
         {/* Global Editorial Header */}
         <Header
@@ -259,6 +293,8 @@ export default function App() {
           </div>
         </div>
       </footer>
+      </>
+      )}
     </div>
   );
 }

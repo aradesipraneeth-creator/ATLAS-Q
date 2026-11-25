@@ -1,249 +1,217 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Info, 
   Target, 
   Cpu, 
-  Layers, 
-  Database, 
-  Activity, 
+  Network,
+  Waves,
+  MessageSquare,
   CheckCircle2, 
-  ArrowUpRight, 
-  Radio, 
-  ShieldAlert, 
-  Wind, 
-  CloudRain,
   ExternalLink,
-  Globe2
+  BarChart3
 } from 'lucide-react';
+import { fetchModelEvaluation } from '../services/api';
 
 export default function AboutPage() {
+  const [evalData, setEvalData] = useState(null);
+
+  useEffect(() => {
+    fetchModelEvaluation()
+      .then(res => setEvalData(res.evaluation))
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="space-y-12 max-w-5xl mx-auto">
-      {/* 04 Header & Editorial Title */}
+      {/* 04 Header (Zero SIH PS IDs) */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex items-center space-x-2 glass-pill text-[#28191D] text-xs font-mono font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#A51F52]"></span>
-            <span>04 — About ATLAS-Q</span>
+            <span>04. ATLAS-Q Research</span>
             <span>•</span>
-            <span>Project Documentation & Scientific Architecture</span>
+            <span>Scientific Architecture, Evaluation & Limitations</span>
           </div>
-          <span className="text-xs font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">SIH 2026 • PS 26072</span>
+          <span className="text-xs font-mono text-[#735E60] glass-pill px-3 py-1 rounded-full">V3.0 RESEARCH PROTOTYPE</span>
         </div>
 
         <div className="pb-4 border-b border-[#EBDCD8] space-y-2">
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#28191D] font-headline lowercase">
-            architecture & science.
+            atlas-q research.
           </h1>
           <p className="text-base sm:text-lg text-[#735E60] font-sans leading-relaxed">
-            Atmospheric Thunderstorm & Lightning Analysis System with Quantum-Inspired Optimization. 
-            A comprehensive overview of our scientific foundation, computational models, and operational architecture.
+            National AI-powered atmospheric intelligence and predictive disaster simulation combining 
+            Liquid Neural Networks (LNN), Geographic Graph Neural Networks (GNN), hydrological flood modelling, 
+            an evidence-grounded Disaster Copilot, and Quantum-Inspired Optimization.
           </p>
         </div>
       </section>
 
-      {/* 1. Problem Statement & Motivation in Glass */}
+      {/* Core Research Questions */}
       <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4">
         <div className="flex items-center space-x-2 text-[#A51F52] text-xs font-bold font-mono uppercase tracking-wider">
           <Target className="w-4 h-4" />
-          <span>SMART INDIA HACKATHON 2026 • PS 26072</span>
+          <span>CORE RESEARCH MISSION</span>
         </div>
         <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
-          the severe weather nowcasting challenge.
+          five operational questions atlas-q answers.
         </h2>
-        <p className="text-sm text-[#735E60] leading-relaxed">
-          Severe convective thunderstorms, lightning strikes, and tropical cyclones cause thousands of casualties 
-          and extensive socioeconomic destruction annually across India. Traditional Numerical Weather Prediction (NWP) 
-          models run on 6-to-12-hour assimilation cycles, creating an observational blind spot for rapid convective 
-          events (Kalbaishakhi/Nor'westers) that initiate, intensify, and dissipate within 30 to 90 minutes.
-        </p>
-        <div className="p-4 rounded-2xl glass-panel border border-white/60 text-xs text-[#28191D] font-sans">
-          <strong>Official Challenge:</strong> "AIML based Nowcasting of thunderstorm and lightning using atmospheric 
-          observation including multiple radars, satellite, lightning and model data."
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+          {[
+            "1. Where could a disaster develop or move?",
+            "2. Which geographic locations could be affected?",
+            "3. What hazards could each location experience?",
+            "4. How severe could impact be & how uncertain is it?",
+            "5. What response strategies reduce exposure?"
+          ].map((q, i) => (
+            <div key={i} className="p-3.5 rounded-2xl glass-panel border border-white/60 font-semibold text-[#28191D]">
+              {q}
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* 2. End-to-End System Architecture */}
-      <section className="space-y-4">
-        <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
-          end-to-end data & decision workflow.
-        </h2>
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-sans">
-            <div className="p-4 rounded-2xl glass-panel border border-white/60 space-y-2">
-              <span className="text-[10px] font-mono font-bold text-[#A51F52] block">STAGE 1: INGESTION</span>
-              <h4 className="font-bold text-[#28191D] text-sm">Multimodal Sensors</h4>
-              <p className="text-[#735E60] leading-snug">
-                Doppler Weather Radar (DWR) S-Band grids, INSAT-3D/3DR TIR channels, ground lightning detectors, and Open-Meteo surface stations.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl glass-panel border border-white/60 space-y-2">
-              <span className="text-[10px] font-mono font-bold text-[#A51F52] block">STAGE 2: NOWCASTING</span>
-              <h4 className="font-bold text-[#28191D] text-sm">Spatial Clustering & Kinematics</h4>
-              <p className="text-[#735E60] leading-snug">
-                8-connectivity connected-component cell isolation (Z ≥ 35 dBZ), centroid tracking, and 0–60m Haversine extrapolation with 95% uncertainty cones.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl glass-panel border border-white/60 space-y-2">
-              <span className="text-[10px] font-mono font-bold text-[#A51F52] block">STAGE 3: CYCLONE ENGINE</span>
-              <h4 className="font-bold text-[#28191D] text-sm">Track & Wind Radii</h4>
-              <p className="text-[#735E60] leading-snug">
-                IMD-standard advisory parsing, eye tracking, quadrant wind radii (R34, R50, R64), and coastal storm surge inundation estimation.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl border border-[#c4db9e] space-y-2 bg-[#D3E4B7]/80">
-              <span className="text-[10px] font-mono font-bold text-[#28191D] block">STAGE 4: DECISION QSA</span>
-              <h4 className="font-bold text-[#28191D] text-sm">Resource Optimization</h4>
-              <p className="text-[#28191D] leading-snug font-medium">
-                Quantum-Inspired Simulated Annealing on CPU escaping local minima to allocate shelters, rescue boats, and evacuation staging.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Quantum-Inspired Simulated Annealing (QSA) Detailed Mechanics */}
-      <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
-        <div className="flex items-center space-x-2 text-[#A51F52] text-xs font-bold font-mono uppercase tracking-wider">
-          <Cpu className="w-4 h-4" />
-          <span>MATHEMATICAL FOUNDATION</span>
-        </div>
-        <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
-          how quantum-inspired optimization works.
-        </h2>
-        <div className="space-y-4 text-sm text-[#735E60] leading-relaxed">
-          <p>
-            In complex disaster logistics, assigning thousands of evacuees across finite-capacity shelters while 
-            minimizing exposure to severe flood corridors creates a <strong>non-convex, NP-hard combinatorial energy landscape</strong>. 
-            Classical greedy and standard simulated annealing algorithms frequently become trapped in suboptimal local minima.
-          </p>
-          <div className="p-5 rounded-2xl glass-panel border border-white/60 font-mono text-xs text-[#28191D] space-y-2">
-            <div className="font-bold text-[#A51F52]">Transverse-Field Ising Hamiltonian Mapping:</div>
-            <div>H = - \sum_{'{i,j}'} J_{'{ij}'} \sigma_i^z \sigma_j^z - \Gamma(t) \sum_i \sigma_i^x</div>
-            <p className="font-sans text-[11px] text-[#735E60] pt-1">
-              Where \(\Gamma(t)\) represents the fictitious transverse magnetic field that decays smoothly over annealing iterations, 
-              inducing simulated quantum tunneling through tall, narrow potential energy barriers that thermal fluctuations (\(k_B T\)) cannot overcome.
-            </p>
-          </div>
-          <div className="p-4 rounded-2xl glass-pill text-xs text-[#28191D]">
-            <strong>Scientific Integrity Statement:</strong> ATLAS-Q executes this algorithm purely on classical CPUs 
-            using matrix-free Trotter-Suzuki discretized path-integral approximations. We do not claim physical quantum 
-            hardware execution or quantum supremacy; rather, we demonstrate measurable empirical improvements over classical heuristics.
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Technology Stack & Verification in Glass Panes */}
+      {/* Architecture Innovations */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass-panel rounded-3xl p-6 space-y-3">
-          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
-            frontend engineering.
-          </h3>
-          <ul className="text-xs text-[#735E60] space-y-2 font-mono">
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>React 18 + Vite (SPA Architecture)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>CesiumJS 3D WebGL Earth Globe (WGS84 Ellipsoid)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>Atmospheric Glass Intelligence UI Design System</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>Tailwind CSS with Custom Editorial Palette</span>
-            </li>
-          </ul>
+          <div className="flex items-center space-x-2 text-[#A51F52] font-bold text-xs font-mono">
+            <Cpu className="w-4 h-4" />
+            <span>LIQUID NEURAL NETWORKS (CfC / LTC)</span>
+          </div>
+          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">continuous-time temporal modelling.</h3>
+          <p className="text-xs text-[#735E60] leading-relaxed">
+            Models rapid convective evolution using Closed-form Continuous-time (CfC) differential equations with adaptive 
+            liquid time constants τ_eff. Uses strict causal windowing with chronological 70/15/15 train-val-test splitting to prevent future data leakage.
+          </p>
         </div>
 
         <div className="glass-panel rounded-3xl p-6 space-y-3">
-          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">
-            backend & algorithmic services.
-          </h3>
-          <ul className="text-xs text-[#735E60] space-y-2 font-mono">
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>Python 3.11 + FastAPI + Uvicorn Async</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>8-Connectivity Spatial Clustering & Kinematics</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>IMD-Standard Tropical Cyclone Track & Radii Modeling</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#A51F52]" />
-              <span>Single-Container Render Deployment</span>
-            </li>
-          </ul>
+          <div className="flex items-center space-x-2 text-[#A51F52] font-bold text-xs font-mono">
+            <Network className="w-4 h-4" />
+            <span>GRAPH NEURAL NETWORKS (ST-GAT)</span>
+          </div>
+          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">physically justified spatial graphs.</h3>
+          <p className="text-xs text-[#735E60] leading-relaxed">
+            Connects 16 Andhra Pradesh pilot districts using Haversine meteorological adjacency and directed upstream-to-downstream 
+            river edges (Godavari, Krishna, Pennar, Nagavali) to capture neighborhood storm propagation and downstream flood risk.
+          </p>
+        </div>
+
+        <div className="glass-panel rounded-3xl p-6 space-y-3">
+          <div className="flex items-center space-x-2 text-[#A51F52] font-bold text-xs font-mono">
+            <Waves className="w-4 h-4" />
+            <span>HYDROLOGICAL FLOOD & SURROGATE</span>
+          </div>
+          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">scs-cn runoff + coastal tailwater.</h3>
+          <p className="text-xs text-[#735E60] leading-relaxed">
+            Integrates DEM elevation/slope vulnerability, USDA-NRCS SCS Curve Number runoff estimation, drainage capacity deficits, 
+            and cyclone surge tailwater effects, paired with GNN surrogate acceleration for interactive what-if experiments.
+          </p>
+        </div>
+
+        <div className="glass-panel rounded-3xl p-6 space-y-3">
+          <div className="flex items-center space-x-2 text-[#A51F52] font-bold text-xs font-mono">
+            <MessageSquare className="w-4 h-4" />
+            <span>DISASTER COPILOT + QSA</span>
+          </div>
+          <h3 className="text-lg font-bold text-[#28191D] font-headline lowercase">evidence-grounded decision support.</h3>
+          <p className="text-xs text-[#735E60] leading-relaxed">
+            Retrieval-Augmented assistant cites exact model IDs, timestamps, and provenance tags while classical-CPU Quantum-Inspired 
+            Simulated Annealing (QSA) benchmarks emergency shelter allocation against Classical SA and Greedy baselines.
+          </p>
         </div>
       </section>
 
-      {/* 5. Roadmap: From Prototype to Operational Production */}
+      {/* Model Evaluation Results (Live from /api/intelligence/evaluation) */}
+      {evalData && (
+        <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EBDCD8]">
+            <div className="flex items-center space-x-2">
+              <BarChart3 className="w-5 h-5 text-[#A51F52]" />
+              <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
+                prototype replay evaluation metrics.
+              </h2>
+            </div>
+            <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-full bg-[#F4E3E6] text-[#A51F52]">
+              {evalData.evaluation_status}
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl glass-pill text-xs text-[#735E60]">
+            <strong className="text-[#28191D]">Scientific Disclosure:</strong> {evalData.disclosure}
+          </div>
+
+          {/* LNN & GNN vs Baselines Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-mono">
+              <thead>
+                <tr className="border-b border-[#EBDCD8] text-[10px] uppercase font-bold text-[#735E60]">
+                  <th className="py-2.5 px-3">MODEL / BASELINE</th>
+                  <th className="py-2.5 px-3">RAINFALL MAE (MM/HR)</th>
+                  <th className="py-2.5 px-3">LIGHTNING CSI (30M)</th>
+                  <th className="py-2.5 px-3 text-right">STATUS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F4E3E6]">
+                {evalData.lnn_gnn_ablation?.models?.map((m, i) => (
+                  <tr key={i}>
+                    <td className="py-2.5 px-3 font-sans font-bold text-[#28191D]">{m.model}</td>
+                    <td className="py-2.5 px-3 text-[#A51F52] font-bold">{m.rain_mae_mm_hr}</td>
+                    <td className="py-2.5 px-3">{m.lightning_csi_30m}</td>
+                    <td className="py-2.5 px-3 text-right">{m.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Lightning POD / FAR / CSI & Flood Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div className="glass-panel p-4 rounded-2xl border border-white/60 space-y-2">
+              <span className="font-sans font-bold text-[#28191D] block">Lightning Lead-Time Skill (Replay)</span>
+              {evalData.lightning_evaluation?.windows?.map((w, i) => (
+                <div key={i} className="flex justify-between">
+                  <span>{w.lead} Window:</span>
+                  <span>POD {w.pod} | FAR {w.far} | CSI <strong className="text-[#A51F52]">{w.csi}</strong></span>
+                </div>
+              ))}
+            </div>
+            <div className="glass-panel p-4 rounded-2xl border border-white/60 space-y-2">
+              <span className="font-sans font-bold text-[#28191D] block">Flood & Cyclone Replay Benchmarks</span>
+              <div className="flex justify-between"><span>Godavari/Krishna IoU:</span><strong>{evalData.flood_evaluation?.inundation_iou}</strong></div>
+              <div className="flex justify-between"><span>Water Depth RMSE:</span><strong>{evalData.flood_evaluation?.water_depth_rmse_m} m</strong></div>
+              <div className="flex justify-between"><span>Cyclone 24h Track Err:</span><strong>{evalData.cyclone_evaluation?.track_error_km?.['24h']} km</strong></div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Limitations & Future Scope */}
       <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4">
         <h2 className="text-2xl font-bold text-[#28191D] font-headline lowercase">
-          model evolution roadmap.
+          honest limitations & future scope.
         </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans">
-            <thead>
-              <tr className="border-b border-[#EBDCD8] text-[10px] uppercase font-bold text-[#735E60]">
-                <th className="py-2.5 px-3">CAPABILITY</th>
-                <th className="py-2.5 px-3">PHASE 1 (CURRENT PROTOTYPE)</th>
-                <th className="py-2.5 px-3">PHASE 2 (PRODUCTION TARGET)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F4E3E6]">
-              <tr>
-                <td className="py-3 px-3 font-bold text-[#28191D]">Storm Detection</td>
-                <td className="py-3 px-3 text-[#A51F52] font-medium">8-Connectivity Connected-Component (Z ≥ 35 dBZ)</td>
-                <td className="py-3 px-3 text-[#735E60]">3D Residual UNet on Full Volumetric Radar Scans</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-3 font-bold text-[#28191D]">Motion Nowcasting</td>
-                <td className="py-3 px-3 text-[#A51F52] font-medium">Kinematic Centroid Displacement & Uncertainty Cones</td>
-                <td className="py-3 px-3 text-[#735E60]">Fourier Neural Operators (FNO) + Spatiotemporal ViT</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-3 font-bold text-[#28191D]">Cyclone Forecasting</td>
-                <td className="py-3 px-3 text-[#A51F52] font-medium">IMD Multi-Model Consensus & Radius Extrapolation</td>
-                <td className="py-3 px-3 text-[#735E60]">Physics-Informed Neural Networks (PINN) on NWP Vorticity</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-3 font-bold text-[#28191D]">Decision Optimization</td>
-                <td className="py-3 px-3 text-[#A51F52] font-medium">Quantum-Inspired Simulated Annealing on CPU (QSA)</td>
-                <td className="py-3 px-3 text-[#735E60]">Hybrid QAOA / D-Wave Annealer Cloud Integration</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <ul className="text-xs text-[#735E60] space-y-2 leading-relaxed list-disc pl-5">
+          <li><strong>Prototype Training Status:</strong> Current LNN and GNN weights (`lnn_cfc_v1.json`) are calibrated on deterministic replay scenarios rather than multi-year archived IMD Doppler volumetric scans.</li>
+          <li><strong>Official Authority Boundary:</strong> ATLAS-Q complements — and never replaces — official IMD cyclone bulletins, ISRO/NRSC satellite nowcasts, and NDMA/SDMA evacuation authorizations.</li>
+          <li><strong>Next Research Phase:</strong> Ingest multi-year IMD NetCDF/HDF5 radar archives, train PyTorch CfC + PyTorch Geometric ST-GAT models offline, and couple with 2D HEC-RAS/LISFLOOD-FP hydrodynamic ground truth.</li>
+        </ul>
       </section>
 
-      {/* 6. Credits & Project Attribution */}
+      {/* Attribution */}
       <section className="p-6 rounded-3xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="font-bold text-[#28191D] text-sm block font-headline lowercase">atlas-q development team.</span>
-          <p className="text-xs text-[#735E60]">Engineered for the Smart India Hackathon (SIH 2026) • Problem Statement 26072.</p>
+          <span className="font-bold text-[#28191D] text-sm block font-headline lowercase">atlas-q research platform.</span>
+          <p className="text-xs text-[#735E60]">Open-architecture atmospheric intelligence & disaster simulation prototype.</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <a
-            href="https://github.com/aradesipraneeth-creator/ATLAS-Q"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-[#28191D] hover:bg-[#3d272c] text-white rounded-full font-bold uppercase tracking-wider text-[10px] transition inline-flex items-center space-x-1 shadow-xs"
-          >
-            <span>GitHub Repository</span>
-            <ExternalLink className="w-3 h-3 ml-1" />
-          </a>
-        </div>
+        <a
+          href="https://github.com/aradesipraneeth-creator/ATLAS-Q"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-[#28191D] hover:bg-[#3d272c] text-white rounded-full font-bold uppercase tracking-wider text-[10px] transition inline-flex items-center space-x-1 shadow-xs"
+        >
+          <span>GitHub Repository</span>
+          <ExternalLink className="w-3 h-3 ml-1" />
+        </a>
       </section>
     </div>
   );

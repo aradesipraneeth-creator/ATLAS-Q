@@ -11,6 +11,7 @@ import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('command-center');
+  const [regionMode, setRegionMode] = useState('india'); // 'india' or 'andhra_pradesh'
   const [systemOnline, setSystemOnline] = useState(false);
   const [demoMode, setDemoMode] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -77,6 +78,8 @@ export default function App() {
           alertsCount={alertsCount}
           demoMode={demoMode}
           setDemoMode={setDemoMode}
+          regionMode={regionMode}
+          setRegionMode={setRegionMode}
           onLaunchDemo={() => setIsScenarioOpen(true)}
         />
 
@@ -106,12 +109,14 @@ export default function App() {
             </div>
           ) : (
             <div>
-              {/* PAGE 01: COMMAND CENTER */}
+              {/* PAGE 01: EARTH INTELLIGENCE */}
               {(activeTab === 'command-center' || activeTab === 'overview') && (
                 <CommandCenterPage
                   dashboardData={dashboardData}
                   stormsData={stormsData}
                   riskData={riskData}
+                  regionMode={regionMode}
+                  setRegionMode={setRegionMode}
                   selectedStorm={selectedStorm}
                   setSelectedStorm={setSelectedStorm}
                   onOpenStormModal={(storm) => setModalStorm(storm)}
@@ -121,17 +126,17 @@ export default function App() {
                 />
               )}
 
-              {/* PAGE 02: FORECAST INTELLIGENCE */}
+              {/* PAGE 02: PREDICTIVE INTELLIGENCE */}
               {(activeTab === 'forecast-intelligence' || activeTab === 'live-radar' || activeTab === 'storm-tracking' || activeTab === 'lightning') && (
-                <ForecastIntelligencePage />
+                <ForecastIntelligencePage regionMode={regionMode} />
               )}
 
-              {/* PAGE 03: DISASTER MANAGEMENT */}
+              {/* PAGE 03: DISASTER SIMULATION LAB */}
               {(activeTab === 'disaster-management' || activeTab === 'risk-intelligence' || activeTab === 'ai-optimization') && (
-                <DisasterManagementPage />
+                <DisasterManagementPage regionMode={regionMode} />
               )}
 
-              {/* PAGE 04: ABOUT ATLAS-Q */}
+              {/* PAGE 04: ATLAS-Q RESEARCH */}
               {(activeTab === 'about' || activeTab === 'data-sources' || activeTab === 'reports' || activeTab === 'settings') && (
                 <AboutPage />
               )}
@@ -165,7 +170,7 @@ export default function App() {
             {/* Left Headline */}
             <div className="md:col-span-5 space-y-3">
               <span className="text-[11px] font-mono tracking-widest uppercase text-[#F4E3E6] font-bold block">
-                SIH 2026 • PS 26072
+                ATLAS-Q RESEARCH PLATFORM
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tighter font-headline lowercase">
                 atmospheric intelligence.<br />
@@ -173,7 +178,7 @@ export default function App() {
                 smarter decisions.
               </h2>
               <p className="text-xs text-[#F4E3E6] leading-relaxed max-w-sm">
-                AI-powered platform for severe thunderstorm nowcasting, tropical cyclone track forecasting, multi-hazard risk assessment, and quantum-inspired disaster response optimization.
+                National AI platform combining Liquid Neural Networks, Geographic Graph Neural Networks, hydrological flood simulation, and quantum-inspired resource optimization.
               </p>
             </div>
 
@@ -181,17 +186,17 @@ export default function App() {
             <div className="md:col-span-4 grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block mb-2">
-                  Operations
+                  Intelligence
                 </span>
                 <ul className="space-y-2 text-[#FFF3F0]">
                   <li>
                     <button onClick={() => setActiveTab('command-center')} className="hover:underline">
-                      01 — Command Center
+                      01. Earth Intelligence
                     </button>
                   </li>
                   <li>
                     <button onClick={() => setActiveTab('forecast-intelligence')} className="hover:underline">
-                      02 — Forecast Intelligence
+                      02. Predictive Intelligence
                     </button>
                   </li>
                 </ul>
@@ -199,17 +204,17 @@ export default function App() {
 
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block mb-2">
-                  Decision Support
+                  Simulation & Research
                 </span>
                 <ul className="space-y-2 text-[#FFF3F0]">
                   <li>
                     <button onClick={() => setActiveTab('disaster-management')} className="hover:underline">
-                      03 — Disaster Management
+                      03. Disaster Simulation Lab
                     </button>
                   </li>
                   <li>
                     <button onClick={() => setActiveTab('about')} className="hover:underline">
-                      04 — About ATLAS-Q
+                      04. ATLAS-Q Research
                     </button>
                   </li>
                 </ul>
@@ -219,11 +224,11 @@ export default function App() {
             {/* Right: Operational Status */}
             <div className="md:col-span-3 space-y-3 text-xs">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#F4E3E6] block">
-                Operational Framework
+                Geographic Scope
               </span>
               <div className="p-3 bg-white/10 rounded-2xl border border-white/10 space-y-1">
-                <span className="text-white font-bold block">National Cyclone Protocol</span>
-                <span className="text-white/80 block text-[11px]">IMD RSMC New Delhi Standard Guidelines & NDMA Disaster Matrix</span>
+                <span className="text-white font-bold block">All India + AP High-Detail Pilot</span>
+                <span className="text-white/80 block text-[11px]">IMD RSMC New Delhi Standards & NDMA Decision Support</span>
               </div>
               <p className="text-[10px] text-white/70">
                 Data sources: INSAT-3D/3DR, DWR S-Band Radars, Ground Lightning Network, Open-Meteo.
@@ -233,9 +238,9 @@ export default function App() {
 
           {/* Bottom Copyright & Disclaimer */}
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#F4E3E6] gap-3">
-            <span>© 2026 ATLAS-Q Meteorological & Disaster Intelligence Platform. All rights reserved.</span>
+            <span>© 2026 ATLAS-Q Atmospheric Intelligence & Predictive Disaster Simulation Platform.</span>
             <span className="text-center sm:text-right font-mono">
-              STATUS: READY FOR SIH 2026 EVALUATION
+              RESEARCH & SIMULATION PROTOTYPE
             </span>
           </div>
         </div>

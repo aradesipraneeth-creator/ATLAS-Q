@@ -127,3 +127,42 @@ export async function runDisasterOptimization(problemType = "shelter_dispatch", 
   });
   return handleResponse(res);
 }
+
+export async function fetchRegionModes() {
+  const res = await fetch(`${API_BASE}/intelligence/regions`);
+  return handleResponse(res);
+}
+
+export async function fetchLnnForecast(location = "Konaseema (AP-KNS)") {
+  const res = await fetch(`${API_BASE}/intelligence/lnn?location=${encodeURIComponent(location)}`);
+  return handleResponse(res);
+}
+
+export async function fetchGnnSpatial(cycloneWindBoost = 1.0, rainMultiplier = 1.0) {
+  const res = await fetch(`${API_BASE}/intelligence/gnn?cyclone_wind_boost=${cycloneWindBoost}&rain_multiplier=${rainMultiplier}`);
+  return handleResponse(res);
+}
+
+export async function fetchFloodSimulation(rainfallMultiplier = 1.0, stormSurgeM = 1.5) {
+  const res = await fetch(`${API_BASE}/intelligence/flood?rainfall_multiplier=${rainfallMultiplier}&storm_surge_m=${stormSurgeM}`);
+  return handleResponse(res);
+}
+
+export async function fetchModelEvaluation() {
+  const res = await fetch(`${API_BASE}/intelligence/evaluation`);
+  return handleResponse(res);
+}
+
+export async function askDisasterCopilot(question, region = "andhra_pradesh", rainfallMultiplier = 1.0, stormSurgeM = 1.5) {
+  const res = await fetch(`${API_BASE}/intelligence/copilot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      question,
+      region,
+      rainfall_multiplier: rainfallMultiplier,
+      storm_surge_m: stormSurgeM
+    })
+  });
+  return handleResponse(res);
+}

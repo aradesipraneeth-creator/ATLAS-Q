@@ -1,0 +1,27 @@
+{
+  "model_id": "atlasq-lnn-cfc-v1.0.0",
+  "architecture": "Closed-form Continuous-time (CfC) / Liquid Time-Constant (LTC) Cell",
+  "state_dim": 6,
+  "input_features": [
+    "temp_c",
+    "humidity_pct",
+    "pressure_hpa",
+    "wind_kmh",
+    "rain_mm_hr",
+    "radar_dbz",
+    "lightning_rate",
+    "cape_j_kg"
+  ],
+  "tau_base_sec": [180.0, 300.0, 600.0, 900.0, 1200.0, 1800.0],
+  "backbone_weights": [0.28, 0.34, -0.42, 0.39, 0.45, 0.52, 0.48, 0.31],
+  "time_gate_weights": [0.12, 0.19, -0.25, 0.22, 0.30, 0.36, 0.29, 0.18],
+  "training_protocol": {
+    "status": "PROTOTYPE_CALIBRATED_ON_SYNTHETIC_AND_HISTORICAL_REPLAY",
+    "chronological_split": {
+      "train": "70% (Earliest observations, T-72h to T-22h)",
+      "validation": "15% (T-22h to T-11h)",
+      "test": "15% (Most recent unseen window, T-11h to T-0)"
+    },
+    "data_leakage_guard": "Strict causal windowing; no future timesteps accessible during state integration."
+  }
+}

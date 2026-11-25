@@ -33,9 +33,12 @@ export default function Globe3D({
   radarStations = [],
   lightningEvents = [],
   cyclones = [],
+  gnnData = null,
+  regionMode = 'india',
   selectedStorm,
   onSelectStorm,
-  onSelectCyclone
+  onSelectCyclone,
+  onSelectDistrict
 }) {
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
@@ -218,6 +221,8 @@ export default function Globe3D({
               onSelectStorm(entity._stormData);
             } else if (entity._cycloneData && onSelectCyclone) {
               onSelectCyclone(entity._cycloneData);
+            } else if (entity._districtData && onSelectDistrict) {
+              onSelectDistrict(entity._districtData);
             }
           }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -499,7 +504,98 @@ export default function Globe3D({
       });
     }
 
-  }, [storms, cyclones, lightningEvents, selectedStorm, showCyclone, showStorms, showLightning, showShelters, showCities, viewMode]);
+    // -------------------------------------------------------------
+    // F. ANDHRA PRADESH GNN DISTRICT GRAPH & RIVER-BASIN EDGES
+    // -------------------------------------------------------------
+    if (gnnData?.district_predictions) {
+      const distMap = {};
+      gnnData.district_predictions.forEach(d => { distMap[d.id] = d; });
+
+      // River-basin edges in glowing cyan
+      (gnnData.edges || []).forEach(edge => {
+        const src = distMap[edge.source];
+        const dst = distMap[edge.target];
+        if (!src || !dst) return;
+        const isRiver = edge.edge_type === 'river_downstream';
+        if (!isRiver && regionMode !== 'andhra_pradesh') return;
+
+        viewer.entities.add({
+          polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+              src.lon, src.lat, 5000,
+              dst.lon, dst.lat, 5000
+            ]),
+            width: isRiver ? 2.5 : 1.0,
+            material: isRiver
+              ? Cesium.Color.fromCssColorString('#38bdf8').withAlpha(0.75)
+              : Cesium.Color.fromCssColorString('#FFF3F0').withAlpha(0.22),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 2200000.0)
+          }
+        });
+      });
+
+      // District Nodes colored by GNN Hazard Tier
+      gnnData.district_predictions.forEach(d => {
+        const tierColor =
+          d.risk_tier === 'CRITICAL' ? '#A51F52' :
+          d.risk_tier === 'HIGH' ? '#d97706' :
+          d.risk_tier === 'MODERATE' ? '#38bdf8' : '#D3E4B7';
+
+        const nodeEntity = viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(d.lon, d.lat, 6000),
+          point: {
+            pixelSize: regionMode === 'andhra_pradesh' ? 11 : 6,
+            color: Cesium.Color.fromCssColorString(tierColor),
+            outlineColor: Cesium.Color.WHITE,
+            outlineWidth: 2,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY
+          },
+          label: {
+            text: `${d.name} (${d.gnn_hazard_score})`,
+            font: 'bold 10px DM Sans, sans-serif',
+            fillColor: Cesium.Color.WHITE,
+            showBackground: true,
+            backgroundColor: Cesium.Color.fromCssColorString('#141f30').withAlpha(0.82),
+            backgroundPadding: new Cesium.Cartesian2(4, 2),
+            pixelOffset: new Cesium.Cartesian2(0, -14),
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 1600000.0),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY
+          }
+        });
+        nodeEntity._districtData = d;
+      });
+    }
+
+  }, [storms, cyclones, lightningEvents, gnnData, regionMode, selectedStorm, showCyclone, showStorms, showLightning, showShelters, showCities, viewMode]);
+
+  // Smooth Camera FlyTo when switching All India <-> Andhra Pradesh Pilot
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer || !window.Cesium || viewer.isDestroyed() || viewMode !== '3d') return;
+    const Cesium = window.Cesium;
+
+    if (regionMode === 'andhra_pradesh') {
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(80.65, 16.35, 920000.0),
+        orientation: {
+          heading: Cesium.Math.toRadians(0.0),
+          pitch: Cesium.Math.toRadians(-72.0),
+          roll: 0.0
+        },
+        duration: 1.6
+      });
+    } else {
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(78.9629, 22.5937, 4800000.0),
+        orientation: {
+          heading: Cesium.Math.toRadians(0.0),
+          pitch: Cesium.Math.toRadians(-90.0),
+          roll: 0.0
+        },
+        duration: 1.6
+      });
+    }
+  }, [regionMode, viewMode]);
 
   // Camera Zoom Presets
   const flyToPreset = (preset) => {

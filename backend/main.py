@@ -24,12 +24,13 @@ from backend.routes.scenarios import router as scenarios_router
 from backend.routes.reports import router as reports_router
 from backend.routes.cyclones import router as cyclones_router
 from backend.routes.disaster import router as disaster_router
+from backend.routes.intelligence import router as intelligence_router
 from backend.data.demo_data import get_current_iso, DEMO_DISCLAIMER
 
 app = FastAPI(
-    title="ATLAS-Q Meteorological Intelligence & Nowcasting Platform",
-    description="Atmospheric Thunderstorm & Lightning Analysis System with Quantum-Inspired Optimization (SIH 2026 PS 26072)",
-    version="2.0.0-editorial"
+    title="ATLAS-Q National Atmospheric Intelligence & Predictive Disaster Simulation",
+    description="AI-powered atmospheric forecasting (LNN + GNN), hydrological flood simulation, and quantum-inspired disaster decision support.",
+    version="3.0.0-research"
 )
 
 # CORS configuration
@@ -55,6 +56,7 @@ app.include_router(scenarios_router)
 app.include_router(reports_router)
 app.include_router(cyclones_router)
 app.include_router(disaster_router)
+app.include_router(intelligence_router)
 
 @app.get("/api/health", tags=["Health"])
 def health_check():

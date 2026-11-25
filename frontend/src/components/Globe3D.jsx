@@ -11,6 +11,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import WeatherMap from './WeatherMap';
+import { loadIndiaBoundaries, loadIndiaStates, loadIndiaDistricts } from '../data/geography/geoLoader';
 
 // Verified Major Indian Cities for Geographic Context
 const INDIA_CITIES = [
@@ -97,7 +98,8 @@ export default function Globe3D({
           timeline: false,
           navigationHelpButton: false,
           scene3DOnly: true,
-          requestRenderMode: false,
+          requestRenderMode: true,
+          maximumRenderTimeChange: Infinity,
           creditContainer: document.createElement('div') // keeps attribution clean inside container
         });
 
@@ -158,30 +160,53 @@ export default function Globe3D({
         }
 
         // -------------------------------------------------------------
-        // 2. LOAD ACCURATE INDIA NATIONAL & STATE BOUNDARIES GEOJSON
+        // 2. LOAD UNIFIED INDIA NATIONAL BOUNDARY, LoC & 36 STATES/UTs
         // -------------------------------------------------------------
         try {
-          const dataSource = await Cesium.GeoJsonDataSource.load('/data/india_states.geojson', {
-            stroke: Cesium.Color.fromCssColorString('#FFF3F0').withAlpha(0.9),
-            fill: Cesium.Color.fromCssColorString('#A51F52').withAlpha(0.07),
-            strokeWidth: 1.8,
+          // A. Lightweight outer boundary + LoC (29.5 KB)
+          const boundaryJson = await loadIndiaBoundaries();
+          if (!isMounted || viewer.isDestroyed()) return;
+
+          const outerSource = await Cesium.GeoJsonDataSource.load(boundaryJson, {
+            stroke: Cesium.Color.fromCssColorString('#FFF3F0').withAlpha(0.95),
+            fill: Cesium.Color.TRANSPARENT,
+            strokeWidth: 2.2
+          });
+          outerSource.entities.values.forEach(ent => {
+            const bType = ent.properties?.boundary_type?.getValue();
+            if (bType === 'line_of_control' && ent.polyline) {
+              ent.polyline.width = 2.0;
+              ent.polyline.material = new Cesium.PolylineDashMaterialProperty({
+                color: Cesium.Color.fromCssColorString('#f59e0b').withAlpha(0.9),
+                dashLength: 12.0
+              });
+            }
+          });
+          viewer.dataSources.add(outerSource);
+
+          // B. 36 States & UTs including full J&K + Ladakh (153.1 KB)
+          const statesJson = await loadIndiaStates();
+          if (!isMounted || viewer.isDestroyed()) return;
+
+          const dataSource = await Cesium.GeoJsonDataSource.load(statesJson, {
+            stroke: Cesium.Color.fromCssColorString('#7dd3fc').withAlpha(0.65),
+            fill: Cesium.Color.fromCssColorString('#A51F52').withAlpha(0.05),
+            strokeWidth: 1.2,
             clampToGround: false
           });
 
           if (!isMounted || viewer.isDestroyed()) return;
 
-          // Add state labels visible at Regional & Local zoom
           const entities = dataSource.entities.values;
           for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
             const stateName = entity.properties?.NAME_1?.getValue();
 
             if (entity.polygon) {
-              entity.polygon.outlineColor = Cesium.Color.fromCssColorString('#FFF3F0').withAlpha(0.85);
-              entity.polygon.outlineWidth = 1.5;
-              entity.polygon.material = Cesium.Color.fromCssColorString('#A51F52').withAlpha(0.05);
+              entity.polygon.outlineColor = Cesium.Color.fromCssColorString('#7dd3fc').withAlpha(0.6);
+              entity.polygon.outlineWidth = 1.2;
+              entity.polygon.material = Cesium.Color.fromCssColorString('#A51F52').withAlpha(0.04);
 
-              // Compute approximate polygon center for state name label
               if (stateName && entity.polygon.hierarchy) {
                 const hierarchy = entity.polygon.hierarchy.getValue(Cesium.JulianDate.now());
                 if (hierarchy && hierarchy.positions && hierarchy.positions.length > 0) {
@@ -205,6 +230,7 @@ export default function Globe3D({
           viewer.dataSources.add(dataSource);
           geoJsonSourceRef.current = dataSource;
           setBoundaryLoaded(true);
+          viewer.scene.requestRender();
         } catch (geoErr) {
           console.error('Failed to load India GeoJSON boundaries:', geoErr);
         }
@@ -566,15 +592,32 @@ export default function Globe3D({
       });
     }
 
+    viewer.scene.requestRender();
+
   }, [storms, cyclones, lightningEvents, gnnData, regionMode, selectedStorm, showCyclone, showStorms, showLightning, showShelters, showCities, viewMode]);
 
-  // Smooth Camera FlyTo when switching All India <-> Andhra Pradesh Pilot
+  // Progressive District Loading & Smooth Camera FlyTo when switching All India <-> Andhra Pradesh Pilot
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer || !window.Cesium || viewer.isDestroyed() || viewMode !== '3d') return;
     const Cesium = window.Cesium;
 
     if (regionMode === 'andhra_pradesh') {
+      loadIndiaDistricts().then(async (distJson) => {
+        if (viewer.isDestroyed()) return;
+        const hasDist = viewer.dataSources._dataSources.some(ds => ds.name === 'ap-districts');
+        if (!hasDist) {
+          const distSource = await Cesium.GeoJsonDataSource.load(distJson, {
+            stroke: Cesium.Color.fromCssColorString('#fbbf24').withAlpha(0.75),
+            fill: Cesium.Color.fromCssColorString('#fbbf24').withAlpha(0.04),
+            strokeWidth: 1.2
+          });
+          distSource.name = 'ap-districts';
+          viewer.dataSources.add(distSource);
+          viewer.scene.requestRender();
+        }
+      }).catch(() => {});
+
       viewer.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(80.65, 16.35, 920000.0),
         orientation: {
@@ -582,7 +625,7 @@ export default function Globe3D({
           pitch: Cesium.Math.toRadians(-72.0),
           roll: 0.0
         },
-        duration: 1.6
+        duration: 1.5
       });
     } else {
       viewer.camera.flyTo({
@@ -592,9 +635,10 @@ export default function Globe3D({
           pitch: Cesium.Math.toRadians(-90.0),
           roll: 0.0
         },
-        duration: 1.6
+        duration: 1.5
       });
     }
+    viewer.scene.requestRender();
   }, [regionMode, viewMode]);
 
   // Camera Zoom Presets
@@ -787,21 +831,29 @@ export default function Globe3D({
               </span>
             </div>
             <div className="text-[10px] text-white/75 font-mono flex items-center space-x-2">
-              <span>India GeoJSON: {boundaryLoaded ? '35 States/UTs Loaded' : 'Loading...'}</span>
+              <span>India GeoJSON: {boundaryLoaded ? '36 States/UTs (incl. J&K & Ladakh)' : 'Loading...'}</span>
               <span>•</span>
               <span>WGS84 3D Ellipsoid</span>
             </div>
           </div>
 
-          {/* Bottom-Right 3D Legend */}
+          {/* Bottom-Right Cartographic & Atmospheric Legend */}
           <div className="absolute bottom-4 right-4 z-20 glass-panel-dark rounded-2xl p-3 text-xs text-white hidden sm:block space-y-1.5">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/80 block">
-              3D Atmospheric Overlays
+              Cartographic &amp; Atmospheric Legend
             </span>
-            <div className="flex items-center space-x-3 text-[10px] font-mono">
+            <div className="flex flex-wrap items-center gap-3 text-[10px] font-mono">
+              <span className="flex items-center space-x-1">
+                <span className="w-3.5 h-0.5 bg-[#FFF3F0] inline-block"></span>
+                <span>Claimed Intl. Boundary</span>
+              </span>
+              <span className="flex items-center space-x-1">
+                <span className="w-3.5 h-0.5 border-b-2 border-dashed border-[#f59e0b] inline-block"></span>
+                <span>Line of Control (LoC)</span>
+              </span>
               <span className="flex items-center space-x-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#A51F52]"></span>
-                <span>Cyclone / Severe Core</span>
+                <span>Cyclone / Core</span>
               </span>
               <span className="flex items-center space-x-1">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
@@ -811,6 +863,9 @@ export default function Globe3D({
                 <span className="w-2.5 h-2.5 rounded-full bg-[#D3E4B7]"></span>
                 <span>Shelter</span>
               </span>
+            </div>
+            <div className="text-[9px] text-white/60 font-sans">
+              Source: Survey of India / Census-aligned composite GeoJSON • Dashed LoC denotes administrative line.
             </div>
           </div>
         </div>

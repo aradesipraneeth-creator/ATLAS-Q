@@ -1,0 +1,24 @@
+{
+  "dataset_name": "ATLAS-Q Unified India Cartographic Layer",
+  "source": "udit-001/india-maps-data (Survey of India / Census-aligned composite boundary geometry)",
+  "license": "Open-Source Geospatial Reference (Educational & Research Visualization)",
+  "generated_date": "2026-11-25",
+  "projection": "EPSG:4326 (WGS 84 Geographic Coordinates)",
+  "territorial_extent": {
+    "min_lat": 6.77,
+    "max_lat": 37.08,
+    "min_lon": 68.10,
+    "max_lon": 97.39
+  },
+  "cartographic_conventions": {
+    "international_claimed_boundary": "Outer national perimeter representing India's claimed territorial extent, including the full former princely state of Jammu & Kashmir and the Union Territory of Ladakh.",
+    "line_of_control_loc": "Derived internal administrative line distinguishing Indian-administered J&K districts from Muzaffarabad and Mirpur; rendered with a dashed cartographic convention rather than an international border.",
+    "state_ut_count": 36,
+    "pilot_districts": "Andhra Pradesh district boundaries loaded progressively on regional/pilot zoom."
+  },
+  "files": {
+    "india-boundaries.geojson": "Lightweight outer perimeter + LoC reference (29.5 KB) for rapid 3D Intro & overview",
+    "india-states.geojson": "All 36 Indian States and Union Territories (153.1 KB)",
+    "india-districts.geojson": "Andhra Pradesh district polygons for progressive zoom-in (34.5 KB)"
+  }
+}
